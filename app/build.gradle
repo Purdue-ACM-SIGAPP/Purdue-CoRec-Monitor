@@ -33,6 +33,8 @@ dependencies {
     //Butterknife for view binding
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    //Charting
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     //Additional dependencies
     implementation 'com.google.code.gson:gson:2.8.1'
     testImplementation 'junit:junit:4.12'

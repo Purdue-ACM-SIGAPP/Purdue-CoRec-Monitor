@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         coRecAdapter = new CoRecAdapter();
         mainRecyclerView.setAdapter(coRecAdapter);
 

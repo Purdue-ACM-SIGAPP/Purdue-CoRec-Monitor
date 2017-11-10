@@ -13,7 +13,8 @@ public class LocationsModel implements Comparable<LocationsModel>{
 
     public int compareTo(LocationsModel t){
         if(this.ZoneId == t.ZoneId){
-
-        }else if(this)
+            return 1;
+        }
+        return 0;
     }
 }

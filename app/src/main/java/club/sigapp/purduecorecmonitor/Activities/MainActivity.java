@@ -1,5 +1,6 @@
 package club.sigapp.purduecorecmonitor.Activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -9,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.util.List;
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     TextView status;
 
     private CoRecAdapter coRecAdapter;
+    final private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<List<LocationsModel>> call, Throwable t) {
                 status.setText("Failure");
                 loadingBar.setVisibility(View.GONE);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext())
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
                         .setTitle("Data retrieval failed")
                         .setMessage("Unable to connect to the Internet")
                         .setCancelable(false)

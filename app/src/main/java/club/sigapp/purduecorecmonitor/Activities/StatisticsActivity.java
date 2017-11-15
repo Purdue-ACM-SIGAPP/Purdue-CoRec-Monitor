@@ -12,6 +12,11 @@ import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Adapters.StatisticPagerAdapter;
 import club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment;
 import club.sigapp.purduecorecmonitor.Fragments.WeeklyFragment;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+
+import java.util.ArrayList;
+
 import club.sigapp.purduecorecmonitor.R;
 
 public class StatisticsActivity extends AppCompatActivity {
@@ -45,6 +50,10 @@ public class StatisticsActivity extends AppCompatActivity {
         }
     }
 
+        LineChart chart = (LineChart) findViewById(R.id.chart);
+
+        double[] dataObjects = new double[1];
+        ArrayList<Entry> entries = new ArrayList<Entry>();
 
     private void setupTabLayout() {
         pagerAdapter = new StatisticPagerAdapter

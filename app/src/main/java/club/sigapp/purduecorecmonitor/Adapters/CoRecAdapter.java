@@ -66,6 +66,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         @OnClick(R.id.fav_button)
         public void onClickFav() {
             System.out.println("worked");
+            favButton.setImageResource(R.drawable.ic_favorited_star);
         }
 
     }

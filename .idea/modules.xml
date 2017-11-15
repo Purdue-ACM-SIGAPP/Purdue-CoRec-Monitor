@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Purdue-CoRec-Monitor.iml" filepath="$PROJECT_DIR$/.idea/Purdue-CoRec-Monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Purdue-CoRec-Monitor.iml" filepath="$PROJECT_DIR$/Purdue-CoRec-Monitor.iml" />
+      <module fileurl="file://C:\Users\Chris\AndroidStudioProjects\Purdue-CoRec-Monitor\.idea\Purdue-CoRec-Monitor.iml" filepath="C:\Users\Chris\AndroidStudioProjects\Purdue-CoRec-Monitor\.idea\Purdue-CoRec-Monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Chris\AndroidStudioProjects\Purdue-CoRec-Monitor\app\app.iml" filepath="C:\Users\Chris\AndroidStudioProjects\Purdue-CoRec-Monitor\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -38,6 +38,8 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     @Override
     public void onBindViewHolder(AreaViewHolder holder, int position) {
         holder.cardTitle.setText(locations.get(position).LocationName);
+        String headString = "Headcount: " + locations.get(position).Headcount;
+        holder.headCount.setText(headString);
     }
 
     @Override
@@ -54,6 +56,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @BindView(R.id.fav_button)
         ImageButton favButton;
+
+        @BindView(R.id.headcount)
+        TextView headCount;
 
         @BindView(R.id.card_main_title)
         TextView cardTitle;

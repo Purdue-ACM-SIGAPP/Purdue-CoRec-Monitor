@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 status.setText("Success");
                 loadingBar.setVisibility(View.GONE);
                 startAdaptor(response.body());
+
             }
 
             @Override
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private void startAdaptor(List<LocationsModel> data){
         String[] favorites = new String[1]; //do something with me
         coRecAdapter = new CoRecAdapter(favorites, data);
+        coRecAdapter.notifyDataSetChanged();
         mainRecyclerView.setAdapter(coRecAdapter);
     }
 

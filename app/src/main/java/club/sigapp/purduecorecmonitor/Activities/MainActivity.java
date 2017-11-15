@@ -84,8 +84,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startAdaptor(List<LocationsModel> data){
-        Log.d("Location data", data.get(0).LocationName);
+
+        //test
+        Log.i("Location Name", data.get(0).LocationName);
         String[] favorites = new String[1]; //do something with me
+        favorites[0] = "d45a83bf-3403-415e-b5dd-c99387a195d4";
+        Log.i("Location ID", data.get(0).LocationId);
+
+
         coRecAdapter = new CoRecAdapter(favorites, data);
         coRecAdapter.notifyDataSetChanged();
 

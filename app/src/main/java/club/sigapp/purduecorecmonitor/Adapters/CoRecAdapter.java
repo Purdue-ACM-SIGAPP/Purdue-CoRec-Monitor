@@ -42,7 +42,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
     @Override
     public int getItemCount() {
-        return 0;
+        return locations.size();
     }
 
 

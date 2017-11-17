@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,8 +17,15 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
+import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
+import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class StatisticsActivity extends AppCompatActivity {
 
@@ -27,6 +35,8 @@ public class StatisticsActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
+    @BindView(R.id.chart)
+    LineChart chart;
 
     private StatisticPagerAdapter pagerAdapter;
 
@@ -50,11 +60,6 @@ public class StatisticsActivity extends AppCompatActivity {
         }
     }
 
-        LineChart chart = (LineChart) findViewById(R.id.chart);
-
-        double[] dataObjects = new double[1];
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-
     private void setupTabLayout() {
         pagerAdapter = new StatisticPagerAdapter
                 (getSupportFragmentManager());
@@ -62,5 +67,28 @@ public class StatisticsActivity extends AppCompatActivity {
         pagerAdapter.addFragment(new MonthlyFragment(), "Monthly", false);
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void initializeLineChart() {
+        double[] dataObjects = new double[1];
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+        CoRecApi api = CoRecApiHelper.getInstance();
+        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+            @Override
+            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                if (response.code() != 200) {
+                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
+                } else {
+                    //Toast.makeText(this, "Error", 2).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+
+            }
+        });
+
+
     }
 }

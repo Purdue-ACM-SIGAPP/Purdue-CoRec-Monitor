@@ -113,14 +113,16 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         public void onClickFav() {
             Set<String> favorites = Favorites.getFavorites(context);
 
-            if (favorites != null && favorites.contains(cardTitle.getText())) {
+            String locationId = locations.get(this.getLayoutPosition()).LocationId;
+
+            if (favorites != null && favorites.contains(locationId)) {
                 //Item was already favorited, so change it to the unfavorited star and remove from favorites
                 favButton.setImageResource(R.drawable.ic_unfavorited_star);
-                Favorites.removeFavorite(context, (String) cardTitle.getText());
+                Favorites.removeFavorite(context, locationId);
             } else {
                 //Not in favorites yet - change to favorited star and add to favorites
                 favButton.setImageResource(R.drawable.ic_favorited_star);
-                Favorites.addFavorite(context, (String) cardTitle.getText());
+                Favorites.addFavorite(context, locationId);
             }
 
         }

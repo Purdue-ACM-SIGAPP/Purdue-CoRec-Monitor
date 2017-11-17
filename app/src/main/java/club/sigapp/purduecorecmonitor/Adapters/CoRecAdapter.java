@@ -1,5 +1,6 @@
 package club.sigapp.purduecorecmonitor.Adapters;
 
+import android.content.Context;
 import android.location.Location;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,26 +9,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 
 import java.util.List;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 
 import club.sigapp.purduecorecmonitor.R;
+import club.sigapp.purduecorecmonitor.Utils.Favorites;
 
 public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHolder> {
 
     private List<LocationsModel> locations;
     private String[] favorites;
+    private Context context;
 
-    public CoRecAdapter(String[] favorites, List<LocationsModel> data){
+    public CoRecAdapter(Context context, String[] favorites, List<LocationsModel> data){
         this.locations = data;
         this.favorites = favorites;
+        this.context = context;
     }
 
     @Override
@@ -43,12 +49,14 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         String headString = "Headcount: " + locations.get(position).Headcount;
         holder.headCount.setText(headString);
         boolean favorited = false;
+
         for (int i = 0; i < favorites.length; i++){
             if (locations.get(position).LocationId.equals(favorites[i])){
                 holder.favButton.setImageResource(R.drawable.ic_favorited_star);
                 favorited = true;
             }
         }
+
         if (!favorited){
             holder.favButton.setImageResource(R.drawable.ic_unfavorited_star);
         }
@@ -82,8 +90,14 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @OnClick(R.id.fav_button)
         public void onClickFav() {
-            System.out.println("worked");
-            favButton.setImageResource(R.drawable.ic_favorited_star);
+            Set<String> favorites = Favorites.getFavorites(context);
+            if(favorites.contains(cardTitle.getText())){
+                //Item was already favorited, so change it to the unfavorited star and remove from favorites
+                favButton.setImageResource(R.drawable.ic_unfavorited_star);
+                Favorites.removeFavorite(context, (String)cardTitle.getText());
+            }
+
+            Toast.makeText(context, cardTitle.getText() + " added to favorites.", Toast.LENGTH_SHORT).show();
         }
 
     }

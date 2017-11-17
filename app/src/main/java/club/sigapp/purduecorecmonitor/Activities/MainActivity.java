@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Location ID", data.get(0).LocationId);
 
 
-        coRecAdapter = new CoRecAdapter(favorites, data);
+        coRecAdapter = new CoRecAdapter(this, favorites, data);
         coRecAdapter.notifyDataSetChanged();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

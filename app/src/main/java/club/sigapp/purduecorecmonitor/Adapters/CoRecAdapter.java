@@ -42,10 +42,15 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         holder.cardTitle.setText(locations.get(position).LocationName);
         String headString = "Headcount: " + locations.get(position).Headcount;
         holder.headCount.setText(headString);
+        boolean favorited = false;
         for (int i = 0; i < favorites.length; i++){
             if (locations.get(position).LocationId.equals(favorites[i])){
                 holder.favButton.setImageResource(R.drawable.ic_favorited_star);
+                favorited = true;
             }
+        }
+        if (!favorited){
+            holder.favButton.setImageResource(R.drawable.ic_unfavorited_star);
         }
     }
 

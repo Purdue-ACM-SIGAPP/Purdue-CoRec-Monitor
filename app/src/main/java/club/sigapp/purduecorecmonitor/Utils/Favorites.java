@@ -13,7 +13,6 @@ public class Favorites {
             Set<String> favorites = shared.getStringSet("favorites", null);
             if (!favorites.contains(newFavorite)) {
                 favorites.add(newFavorite);
-                shared.edit().remove("favorites").apply();
                 shared.edit().putStringSet("favorites", favorites).apply();
             }
         } else {
@@ -29,7 +28,6 @@ public class Favorites {
             Set<String> favorites = shared.getStringSet("favorites", null);
             if (favorites.contains(toRemoveFavorite)) {
                 favorites.remove(toRemoveFavorite);
-                shared.edit().remove("favorites").apply();
                 shared.edit().putStringSet("favorites", favorites).apply();
             }
         }

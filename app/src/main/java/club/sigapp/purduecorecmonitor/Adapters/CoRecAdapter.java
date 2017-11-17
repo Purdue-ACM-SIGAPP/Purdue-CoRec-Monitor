@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,26 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         this.locations = data;
         this.favorites = favorites;
         this.context = context;
+
+        Collections.sort(locations);
+        int count = 0;
+        //iterate through all locations that have been favorited
+        for(String s: favorites){
+            //iterate through all locations to search for favorited location
+            for(int i = count; i < locations.size(); i++){
+                if(s.equals(locations.get(i).LocationId)){
+                    /*move this location to index count and shift all others between count index
+                    and i down one to make room at top
+                     */
+                    LocationsModel temp = locations.get(i);
+                    for(int index = i; index > count; index--){
+                        //shift location to the right
+                        locations.set(index,locations.get(index-1));
+                    }
+                    locations.set(count++, temp);
+                }
+            }
+        }
     }
 
     @Override
@@ -66,6 +87,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     public int getItemCount() {
         return locations.size();
     }
+
 
 
     public class AreaViewHolder extends RecyclerView.ViewHolder {

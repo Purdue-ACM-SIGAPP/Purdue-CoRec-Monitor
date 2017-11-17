@@ -22,6 +22,7 @@ import java.util.List;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
+
 import club.sigapp.purduecorecmonitor.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,7 +89,5 @@ public class StatisticsActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 }

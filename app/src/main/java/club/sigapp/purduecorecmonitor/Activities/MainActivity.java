@@ -87,8 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
         //test
         Log.i("Location Name", data.get(0).LocationName);
-        String[] favorites = new String[1]; //do something with me
+        String[] favorites = new String[3]; //do something with me
         favorites[0] = "d45a83bf-3403-415e-b5dd-c99387a195d4";
+        favorites[1] = "7071edb7-856e-4d05-8957-4001484f9aec";
+        favorites[2] = "f9706aca-7b90-41a5-9c60-c78251ea62f0";
         Log.i("Location ID", data.get(0).LocationId);
 
 

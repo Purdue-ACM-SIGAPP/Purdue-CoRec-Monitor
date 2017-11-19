@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,13 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         this.favorites = favorites;
         this.context = context;
 
+        reorderList();
+    }
+
+    private void reorderList(){
+        this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
         Collections.sort(locations);
+
         int count = 0;
         //iterate through all locations that have been favorited
         for(String s: favorites){
@@ -124,6 +131,11 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId);
             }
+
+
+
+            reorderList();
+            notifyDataSetChanged();
 
         }
 

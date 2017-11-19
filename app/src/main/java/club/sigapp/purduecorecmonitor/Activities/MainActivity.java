@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,12 +23,12 @@ import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
+import club.sigapp.purduecorecmonitor.Utils.Favorites;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-
 
     @BindView(R.id.mainRecyclerView)
     RecyclerView mainRecyclerView;
@@ -86,22 +87,30 @@ public class MainActivity extends AppCompatActivity {
     private void startAdaptor(List<LocationsModel> data){
 
         //test
+        /*
         Log.i("Location Name", data.get(0).LocationName);
         String[] favorites = new String[3]; //do something with me
         favorites[0] = "d45a83bf-3403-415e-b5dd-c99387a195d4";
         favorites[1] = "7071edb7-856e-4d05-8957-4001484f9aec";
         favorites[2] = "f9706aca-7b90-41a5-9c60-c78251ea62f0";
         Log.i("Location ID", data.get(0).LocationId);
+        */
 
+        Set<String> favorites = Favorites.getFavorites(this);
+        String [] favoritesArray;
+        if(favorites != null){
+            favoritesArray = favorites.toArray(new String[0]);
+        }else{
+            favoritesArray = new String[0];
+        }
 
-        coRecAdapter = new CoRecAdapter(this, favorites, data);
+        coRecAdapter = new CoRecAdapter(this, favoritesArray, data);
         coRecAdapter.notifyDataSetChanged();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mainRecyclerView.setLayoutManager(linearLayoutManager);
 
         mainRecyclerView.setAdapter(coRecAdapter);
-
 
     }
 

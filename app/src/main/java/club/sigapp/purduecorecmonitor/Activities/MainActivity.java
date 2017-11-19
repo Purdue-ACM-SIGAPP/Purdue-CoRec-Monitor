@@ -96,15 +96,9 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Location ID", data.get(0).LocationId);
         */
 
-        Set<String> favorites = Favorites.getFavorites(this);
-        String [] favoritesArray;
-        if(favorites != null){
-            favoritesArray = favorites.toArray(new String[0]);
-        }else{
-            favoritesArray = new String[0];
-        }
 
-        coRecAdapter = new CoRecAdapter(this, favoritesArray, data);
+
+        coRecAdapter = new CoRecAdapter(this, data);
         coRecAdapter.notifyDataSetChanged();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

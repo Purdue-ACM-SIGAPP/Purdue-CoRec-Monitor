@@ -32,9 +32,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     private String[] favorites;
     private Context context;
 
-    public CoRecAdapter(Context context, String[] favorites, List<LocationsModel> data) {
+    public CoRecAdapter(Context context, List<LocationsModel> data) {
         this.locations = data;
-        this.favorites = favorites;
+        this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
         this.context = context;
 
         reorderList();

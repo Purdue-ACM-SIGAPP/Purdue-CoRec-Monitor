@@ -15,7 +15,6 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -34,31 +33,37 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
     public CoRecAdapter(Context context, List<LocationsModel> data) {
         this.locations = data;
-        this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
+        if (Favorites.getFavorites(context) != null) {
+            this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
+        }
         this.context = context;
 
         reorderList();
     }
 
-    private void reorderList(){
-        this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
+    private void reorderList() {
+        if (Favorites.getFavorites(context) != null) {
+            this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
+        }
         Collections.sort(locations);
 
         int count = 0;
         //iterate through all locations that have been favorited
-        for(String s: favorites){
-            //iterate through all locations to search for favorited location
-            for(int i = count; i < locations.size(); i++){
-                if(s.equals(locations.get(i).LocationId)){
+        if (favorites != null) {
+            for (String s : favorites) {
+                //iterate through all locations to search for favorited location
+                for (int i = count; i < locations.size(); i++) {
+                    if (s.equals(locations.get(i).LocationId)) {
                     /*move this location to index count and shift all others between count index
                     and i down one to make room at top
                      */
-                    LocationsModel temp = locations.get(i);
-                    for(int index = i; index > count; index--){
-                        //shift location to the right
-                        locations.set(index,locations.get(index-1));
+                        LocationsModel temp = locations.get(i);
+                        for (int index = i; index > count; index--) {
+                            //shift location to the right
+                            locations.set(index, locations.get(index - 1));
+                        }
+                        locations.set(count++, temp);
                     }
-                    locations.set(count++, temp);
                 }
             }
         }
@@ -78,10 +83,12 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         holder.headCount.setText(headString);
         boolean favorited = false;
 
-        for (int i = 0; i < favorites.length; i++) {
-            if (locations.get(position).LocationId.equals(favorites[i])) {
-                holder.favButton.setImageResource(R.drawable.ic_favorited_star);
-                favorited = true;
+        if (favorites != null) {
+            for (String favorite : favorites) {
+                if (locations.get(position).LocationId.equals(favorite)) {
+                    holder.favButton.setImageResource(R.drawable.ic_favorited_star);
+                    favorited = true;
+                }
             }
         }
 
@@ -94,7 +101,6 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     public int getItemCount() {
         return locations.size();
     }
-
 
 
     public class AreaViewHolder extends RecyclerView.ViewHolder {
@@ -131,7 +137,6 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId);
             }
-
 
 
             reorderList();

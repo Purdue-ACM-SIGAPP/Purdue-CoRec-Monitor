@@ -17,7 +17,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
+import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
+import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class WeeklyFragment extends Fragment {
 
@@ -38,6 +44,12 @@ public class WeeklyFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_weekly, container, false);
         ButterKnife.bind(this, view);
 
+        initializeBarChart();
+        return view;
+    }
+
+    private void initializeBarChart() {
+
         List<BarEntry> barEntries = new ArrayList<>();
         for(int i = 0; i < 7; i++) {
             barEntries.add(new BarEntry(i,i));
@@ -46,7 +58,35 @@ public class WeeklyFragment extends Fragment {
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
         barChart.invalidate();
-        return view;
+
+
+        double[] dataObjects = new double[1];
+        CoRecApi api = CoRecApiHelper.getInstance();
+        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+            @Override
+            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                if (response.code() != 200) {
+                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
+                } else {
+                    //Toast.makeText(this, "Error", 2).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {
+        List<WeeklyTrendsModel> dayDataSet = new ArrayList<>();
+        for (WeeklyTrendsModel data : weeklyTrendsModels) {
+            if (data.DayOfWeek == dayOfWeek) {
+                dayDataSet.add(data);
+            }
+        }
+        return dayDataSet;
     }
 
 }

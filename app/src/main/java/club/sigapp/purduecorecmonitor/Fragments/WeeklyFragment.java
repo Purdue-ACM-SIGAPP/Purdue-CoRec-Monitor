@@ -92,6 +92,9 @@ public class WeeklyFragment extends Fragment {
 
         barChart.getDescription().setEnabled(false);
 
+        barChart.setDragEnabled(false);
+        barChart.setScaleEnabled(false);
+
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {

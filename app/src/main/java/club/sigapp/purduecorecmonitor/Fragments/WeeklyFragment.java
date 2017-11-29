@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -94,6 +95,9 @@ public class WeeklyFragment extends Fragment {
 
         barChart.setDragEnabled(false);
         barChart.setScaleEnabled(false);
+
+        Legend legend = barChart.getLegend();
+        legend.setEnabled(false);
 
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override

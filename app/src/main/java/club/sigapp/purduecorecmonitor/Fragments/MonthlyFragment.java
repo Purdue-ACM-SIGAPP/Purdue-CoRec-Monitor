@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.github.mikephil.charting.charts.LineChart;
 
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -31,7 +34,8 @@ public class MonthlyFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    private LineChart mChart;
+    private TextView tvX, tvY;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

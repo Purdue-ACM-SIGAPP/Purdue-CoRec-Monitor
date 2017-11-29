@@ -34,9 +34,6 @@ public class MonthlyFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private LineChart mChart;
-    private TextView tvX, tvY;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

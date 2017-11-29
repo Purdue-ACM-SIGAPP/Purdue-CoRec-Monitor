@@ -3,6 +3,7 @@ package club.sigapp.purduecorecmonitor.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +91,18 @@ public class WeeklyFragment extends Fragment {
         xAxis.setValueFormatter(new BarGraphXAxisFormatter(Properties.getDaysOfWeek()));
 
         barChart.getDescription().setEnabled(false);
+
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.d("Weekly", Properties.getDaysOfWeek()[(int)e.getX()]);
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {

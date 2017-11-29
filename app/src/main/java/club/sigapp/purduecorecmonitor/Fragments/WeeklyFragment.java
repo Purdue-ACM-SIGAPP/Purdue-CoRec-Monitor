@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.R;
-import club.sigapp.purduecorecmonitor.Utils.*;
 
 public class WeeklyFragment extends Fragment {
 
@@ -37,13 +36,16 @@ public class WeeklyFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_weekly, container, false);
-        ButterKnife.bind(view);
+        ButterKnife.bind(this, view);
 
         List<BarEntry> barEntries = new ArrayList<>();
         for(int i = 0; i < 7; i++) {
             barEntries.add(new BarEntry(i,i));
         }
         BarDataSet barDataSet = new BarDataSet(barEntries, "Label");
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barChart.invalidate();
         return view;
     }
 

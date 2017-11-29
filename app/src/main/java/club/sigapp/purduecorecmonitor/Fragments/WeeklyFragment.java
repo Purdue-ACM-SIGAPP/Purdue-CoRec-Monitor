@@ -7,10 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.R;
 
 public class WeeklyFragment extends Fragment {
 
+    @BindView(R.id.bar_chart)
+    BarChart barChart;
 
     /* This is never used */
     public WeeklyFragment() {
@@ -23,7 +35,18 @@ public class WeeklyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_weekly, container, false);
+        View view =  inflater.inflate(R.layout.fragment_weekly, container, false);
+        ButterKnife.bind(this, view);
+
+        List<BarEntry> barEntries = new ArrayList<>();
+        for(int i = 0; i < 7; i++) {
+            barEntries.add(new BarEntry(i,i));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Label");
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barChart.invalidate();
+        return view;
     }
 
 }

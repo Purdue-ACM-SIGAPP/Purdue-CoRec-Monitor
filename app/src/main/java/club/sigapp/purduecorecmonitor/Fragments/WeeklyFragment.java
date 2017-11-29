@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -98,6 +99,12 @@ public class WeeklyFragment extends Fragment {
 
         Legend legend = barChart.getLegend();
         legend.setEnabled(false);
+
+        YAxis right = barChart.getAxisRight();
+        right.setEnabled(false);
+
+        YAxis left = barChart.getAxisLeft();
+        left.setAxisMinimum(0.0f);
 
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override

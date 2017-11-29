@@ -77,6 +77,7 @@ public class WeeklyFragment extends Fragment {
                     BarData barData = new BarData(barDataSet);
                     barChart.setData(barData);
                     barChart.invalidate();
+                    barChart.animateY(1000);
                 } else {
                     Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }

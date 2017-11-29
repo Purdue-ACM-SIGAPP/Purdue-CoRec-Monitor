@@ -83,7 +83,10 @@ public class WeeklyFragment extends Fragment {
         });
 
         XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new BarGraphXAxisFormatter(Properties.getDaysOfWeek()));
+
+        barChart.getDescription().setEnabled(false);
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {

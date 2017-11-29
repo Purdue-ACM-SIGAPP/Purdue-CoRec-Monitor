@@ -50,23 +50,23 @@ public class WeeklyFragment extends Fragment {
 
     private void initializeBarChart() {
 
-        List<BarEntry> barEntries = new ArrayList<>();
-        for(int i = 0; i < 7; i++) {
-            barEntries.add(new BarEntry(i,i));
-        }
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Label");
-        BarData barData = new BarData(barDataSet);
-        barChart.setData(barData);
-        barChart.invalidate();
+        final List<BarEntry> barEntries = new ArrayList<>();
 
-
-        double[] dataObjects = new double[1];
         CoRecApi api = CoRecApiHelper.getInstance();
         api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
             @Override
             public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
                 if (response.code() != 200) {
                     List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
+                    List<WeeklyTrendsModel> dailyTrendModel;
+                    for (int i = 0; i < 7; i++) {
+                       dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
+                        barEntries.add(new BarEntry(0,averageUsersForTheDay(dailyTrendModel)));
+                    }
+                    BarDataSet barDataSet = new BarDataSet(barEntries, "Weekly Data");
+                    BarData barData = new BarData(barDataSet);
+                    barChart.setData(barData);
+                    barChart.invalidate();
                 } else {
                     //Toast.makeText(this, "Error", 2).show();
                 }
@@ -87,6 +87,14 @@ public class WeeklyFragment extends Fragment {
             }
         }
         return dayDataSet;
+    }
+
+    private float averageUsersForTheDay(List<WeeklyTrendsModel> weeklyTrendsModels) {
+        float average = 0;
+        for (WeeklyTrendsModel data : weeklyTrendsModels) {
+            average += data.Headcount;
+        }
+        return average;
     }
 
 }

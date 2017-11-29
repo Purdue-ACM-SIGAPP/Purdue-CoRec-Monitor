@@ -53,12 +53,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void callRetrofit(){
+        status.setVisibility(View.VISIBLE);
         status.setText("Loading...");
         loadingBar.setVisibility(View.VISIBLE);
         CoRecApiHelper.getInstance().getAllLocations().enqueue(new Callback<List<LocationsModel>>() {
             @Override
             public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
-                status.setText("Success");
+                status.setVisibility(View.GONE);
                 loadingBar.setVisibility(View.GONE);
                 startAdaptor(response.body());
 
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<LocationsModel>> call, Throwable t) {
-                status.setText("Failure");
+                status.setVisibility(View.GONE);
                 loadingBar.setVisibility(View.GONE);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
                         .setTitle("Data retrieval failed")

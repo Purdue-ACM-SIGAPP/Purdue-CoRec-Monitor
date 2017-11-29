@@ -79,7 +79,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     @Override
     public void onBindViewHolder(AreaViewHolder holder, int position) {
         holder.cardTitle.setText(locations.get(position).LocationName);
-        String headString = "Headcount: " + locations.get(position).Headcount;
+        String headString = "Headcount: " + locations.get(position).Headcount + " / Max: " + locations.get(position).Capacity;
         holder.headCount.setText(headString);
         boolean favorited = false;
 

@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class WeeklyFragment extends Fragment {
                         barEntries.add(new BarEntry(i,averageUsersForTheDay(dailyTrendModel)));
                     }
                     BarDataSet barDataSet = new BarDataSet(barEntries, "Weekly Data");
+                    barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
                     BarData barData = new BarData(barDataSet);
                     barChart.setData(barData);
                     barChart.invalidate();

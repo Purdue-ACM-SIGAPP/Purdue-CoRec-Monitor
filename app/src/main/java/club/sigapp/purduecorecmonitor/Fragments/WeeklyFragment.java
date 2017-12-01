@@ -17,10 +17,13 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +79,13 @@ public class WeeklyFragment extends Fragment {
                     }
                     BarDataSet barDataSet = new BarDataSet(barEntries, "Weekly Data");
                     barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+                    barDataSet.setValueTextSize(16f);
+                    barDataSet.setValueFormatter(new IValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                            return new DecimalFormat("###,###,##0").format(value);
+                        }
+                    });
                     BarData barData = new BarData(barDataSet);
                     barChart.setData(barData);
                     barChart.invalidate();

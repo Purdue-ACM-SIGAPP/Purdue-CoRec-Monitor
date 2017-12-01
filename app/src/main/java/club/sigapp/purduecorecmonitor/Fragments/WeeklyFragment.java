@@ -156,7 +156,6 @@ public class WeeklyFragment extends Fragment {
         lineChart.setData(data);
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new BarGraphXAxisFormatter(Properties.getDaysOfWeek()));
 
         lineChart.getDescription().setEnabled(false);
 

@@ -4,27 +4,10 @@
     android:layout_height="match_parent"
     tools:context="club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
     <com.github.mikephil.charting.charts.LineChart
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id = "@+id/chart1">
-    </com.github.mikephil.charting.charts.LineChart>
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id = "@+id/chart2">
-    </com.github.mikephil.charting.charts.LineChart>
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/chart1">
+        android:id = "@+id/stacked_Line_Chart">
     </com.github.mikephil.charting.charts.LineChart>
 
 </FrameLayout>

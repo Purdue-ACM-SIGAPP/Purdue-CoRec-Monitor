@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -83,25 +85,24 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         String headString = "Headcount: " + locations.get(position).Headcount + " / Max: " + locations.get(position).Capacity;
         holder.headCount.setText(headString);
 
-
         switch(locations.get(position).ZoneName){
             case "Basement":
-                holder.icon.setImageResource(R.drawable.ic_floor_basement);
+                Picasso.with(context).load(R.drawable.ic_floor_basement).fit().into(holder.icon);
                 break;
             case "Level 1":
-                holder.icon.setImageResource(R.drawable.ic_floor_one);
+                Picasso.with(context).load(R.drawable.ic_floor_one).fit().into(holder.icon);
                 break;
             case "Level 2":
-                holder.icon.setImageResource(R.drawable.ic_floor_two);
+                Picasso.with(context).load(R.drawable.ic_floor_two).fit().into(holder.icon);
                 break;
             case "Level 3":
-                holder.icon.setImageResource(R.drawable.ic_floor_three);
+                Picasso.with(context).load(R.drawable.ic_floor_three).fit().into(holder.icon);
                 break;
             case "Level 4":
-                holder.icon.setImageResource(R.drawable.ic_floor_four);
+                Picasso.with(context).load(R.drawable.ic_floor_four).fit().into(holder.icon);
                 break;
             case "TREC":
-                holder.icon.setImageResource(R.drawable.ic_floor_trec);
+                Picasso.with(context).load(R.drawable.ic_floor_trec).fit().into(holder.icon);
                 break;
             default:
                 Log.e("MainActivity", "Unknown zone name.");

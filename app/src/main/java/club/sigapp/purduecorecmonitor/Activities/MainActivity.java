@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     callRetrofit();
                                 }
+                            }).setNegativeButton("Okay", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
                             });
                     AlertDialog failure = alertDialogBuilder.create();
                     failure.show();

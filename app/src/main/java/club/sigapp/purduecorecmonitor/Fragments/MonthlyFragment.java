@@ -1,6 +1,7 @@
 package club.sigapp.purduecorecmonitor.Fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +71,13 @@ public class MonthlyFragment extends Fragment {
                     }
 
                     LineDataSet maxCapacity = new LineDataSet(maxOccupancy, "Max Capacity");
+                    maxCapacity.setDrawFilled(true);
+                    maxCapacity.setFillColor(Color.BLACK);
+                    maxCapacity.setFillAlpha(155);
                     LineDataSet currentCapacity = new LineDataSet(currentOccupancy, "Average Capacity");
+                    currentCapacity.enableDashedLine(10,10,0);
+                    currentCapacity.setDrawFilled(true);
+                    currentCapacity.setFillColor(Color.YELLOW);
                     chartLines.add(maxCapacity);
                     chartLines.add(currentCapacity);
 
@@ -82,6 +90,7 @@ public class MonthlyFragment extends Fragment {
                     Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
             }
+
 
             @Override
             public void onFailure(Call<List<MonthlyTrendsModel>> call, Throwable t) {

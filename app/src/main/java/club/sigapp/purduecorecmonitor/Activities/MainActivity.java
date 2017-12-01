@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         callRetrofit();
     }
 
-    private void callRetrofit(){
+    private void callRetrofit() {
         status.setVisibility(View.VISIBLE);
         status.setText("Loading...");
         loadingBar.setVisibility(View.VISIBLE);
@@ -61,6 +61,28 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
                 status.setVisibility(View.GONE);
                 loadingBar.setVisibility(View.GONE);
+                boolean hasNonZero = false;
+                for (LocationsModel location : response.body()) {
+                    if (location.Headcount != 0) {
+                        hasNonZero = true;
+                        break;
+                    }
+                }
+                if (!hasNonZero) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
+                            .setTitle("CoRec Website Error")
+                            .setMessage("It appears that the CoRec website returned all locations as" +
+                                    " having no people. This probably means that the website is down.")
+                            .setCancelable(false)
+                            .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    callRetrofit();
+                                }
+                            });
+                    AlertDialog failure = alertDialogBuilder.create();
+                    failure.show();
+                }
                 startAdaptor(response.body());
 
             }
@@ -85,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startAdaptor(List<LocationsModel> data){
+    private void startAdaptor(List<LocationsModel> data) {
         coRecAdapter = new CoRecAdapter(this, data);
         coRecAdapter.notifyDataSetChanged();
 
@@ -95,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         mainRecyclerView.setAdapter(coRecAdapter);
 
     }
-
 
 
 }

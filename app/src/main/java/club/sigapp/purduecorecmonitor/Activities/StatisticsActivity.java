@@ -40,8 +40,6 @@ public class StatisticsActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
-    @BindView(R.id.chart)
-    LineData data;
 
     private StatisticPagerAdapter pagerAdapter;
 
@@ -53,7 +51,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         initToolbar();
         setupTabLayout();
-        initializeLineChart();
+
     }
 
     private void initToolbar() {
@@ -74,51 +72,6 @@ public class StatisticsActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
-    //i have no god damn clue if any of this works
-    //but it's cool. no worries.
-    private void initializeLineChart() {
-        double[] dataObjects = new double[10];
-        final ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for(int i = 0; i < dataObjects.length; i++) {
-            entries.add(new Entry(i, 2 * i));
-        }
-
-        LineDataSet dataSet = new LineDataSet(entries, "Line Data");
-        dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(dataSet);
-        data = new LineData(dataSets);
-        LineChart chart = new LineChart(this);
-
-        chart.setData(data);
-        chart.invalidate();
-        /*CoRecApi api = CoRecApiHelper.getInstance();
-        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
-            @Override
-            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
-                if (response.code() != 200) {
-                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
-                    for(WeeklyTrendsModel week: weeklyTrendsModels) {
-                        if (week == null) {
-                            continue;
-                        } else {
-
-                        }
-                    }
-                } else {
-                    Toast.makeText(StatisticsActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
-
-            }
-        });
-        */
-
-    }
 
 }

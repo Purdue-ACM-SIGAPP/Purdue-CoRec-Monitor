@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -17,8 +18,11 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -29,6 +33,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
@@ -44,6 +49,9 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.bar_chart)
     BarChart barChart;
 
+    LineData data;
+    @BindView(R.id.chart)
+    LineChart chart;
     /* This is never used */
     public WeeklyFragment() {
         // Required empty public constructor
@@ -130,6 +138,51 @@ public class WeeklyFragment extends Fragment {
 
             }
         });
+    }
+
+    private void initializeLineChart() {
+        double[] dataObjects = new double[10];
+        final ArrayList<Entry> entries = new ArrayList<Entry>();
+
+        for(int i = 0; i < dataObjects.length; i++) {
+            entries.add(new Entry(i, 2 * i));
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Line Data");
+        dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(dataSet);
+        data = new LineData(dataSets);
+        //chart = new LineChart();
+
+        chart.setData(data);
+        chart.invalidate();
+        /*CoRecApi api = CoRecApiHelper.getInstance();
+        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+            @Override
+            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                if (response.code() != 200) {
+                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
+                    for(WeeklyTrendsModel week: weeklyTrendsModels) {
+                        if (week == null) {
+                            continue;
+                        } else {
+
+                        }
+                    }
+                } else {
+                    Toast.makeText(StatisticsActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+
+            }
+        });
+        */
+
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {

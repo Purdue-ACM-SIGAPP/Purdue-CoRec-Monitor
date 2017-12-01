@@ -33,7 +33,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
@@ -50,8 +49,8 @@ public class WeeklyFragment extends Fragment {
     BarChart barChart;
 
     LineData data;
-    @BindView(R.id.chart)
-    LineChart chart;
+    @BindView(R.id.line_chart)
+    LineChart lineChart;
     /* This is never used */
     public WeeklyFragment() {
         // Required empty public constructor
@@ -67,6 +66,7 @@ public class WeeklyFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         initializeBarChart();
+        initializeLineChart();
         return view;
     }
 
@@ -153,35 +153,25 @@ public class WeeklyFragment extends Fragment {
         List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
         dataSets.add(dataSet);
         data = new LineData(dataSets);
-        //chart = new LineChart();
+        lineChart.setData(data);
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new BarGraphXAxisFormatter(Properties.getDaysOfWeek()));
 
-        chart.setData(data);
-        chart.invalidate();
-        /*CoRecApi api = CoRecApiHelper.getInstance();
-        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
-            @Override
-            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
-                if (response.code() != 200) {
-                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
-                    for(WeeklyTrendsModel week: weeklyTrendsModels) {
-                        if (week == null) {
-                            continue;
-                        } else {
+        lineChart.getDescription().setEnabled(false);
 
-                        }
-                    }
-                } else {
-                    Toast.makeText(StatisticsActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                }
+        lineChart.setDragEnabled(false);
+        lineChart.setScaleEnabled(false);
 
-            }
+        Legend legend = lineChart.getLegend();
+        legend.setEnabled(false);
 
-            @Override
-            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+        YAxis right = lineChart.getAxisRight();
+        right.setEnabled(false);
 
-            }
-        });
-        */
+        YAxis left = lineChart.getAxisLeft();
+        left.setAxisMinimum(0.0f);
+        lineChart.invalidate();
 
     }
 

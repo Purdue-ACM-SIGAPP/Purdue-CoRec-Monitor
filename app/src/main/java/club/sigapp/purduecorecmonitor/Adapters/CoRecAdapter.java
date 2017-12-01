@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +82,31 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         holder.cardTitle.setText(locations.get(position).LocationName);
         String headString = "Headcount: " + locations.get(position).Headcount + " / Max: " + locations.get(position).Capacity;
         holder.headCount.setText(headString);
+
+
+        switch(locations.get(position).ZoneName){
+            case "Basement":
+                holder.icon.setImageResource(R.drawable.ic_floor_basement);
+                break;
+            case "Level 1":
+                holder.icon.setImageResource(R.drawable.ic_floor_one);
+                break;
+            case "Level 2":
+                holder.icon.setImageResource(R.drawable.ic_floor_two);
+                break;
+            case "Level 3":
+                holder.icon.setImageResource(R.drawable.ic_floor_three);
+                break;
+            case "Level 4":
+                holder.icon.setImageResource(R.drawable.ic_floor_four);
+                break;
+            case "TREC":
+                holder.icon.setImageResource(R.drawable.ic_floor_trec);
+                break;
+            default:
+                Log.e("MainActivity", "Unknown zone name.");
+        }
+
         boolean favorited = false;
 
         if (favorites != null) {
@@ -116,6 +142,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @BindView(R.id.card_main_title)
         TextView cardTitle;
+
+        @BindView (R.id.icons)
+        ImageView icon;
 
         public AreaViewHolder(View itemView) {
             super(itemView);

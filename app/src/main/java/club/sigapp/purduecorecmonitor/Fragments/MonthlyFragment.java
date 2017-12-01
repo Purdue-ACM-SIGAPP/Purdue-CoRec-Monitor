@@ -10,12 +10,20 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +35,8 @@ import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.Utils.MonthlyComparator;
+import club.sigapp.purduecorecmonitor.Utils.Properties;
+import club.sigapp.purduecorecmonitor.Utils.StackedLineGraphXAxisFormatter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,10 +81,22 @@ public class MonthlyFragment extends Fragment {
                     }
 
                     LineDataSet maxCapacity = new LineDataSet(maxOccupancy, "Max Capacity");
+                    maxCapacity.setValueFormatter(new IValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                            return new DecimalFormat("###,###,##0").format(value);
+                        }
+                    });
                     maxCapacity.setDrawFilled(true);
                     maxCapacity.setFillColor(Color.BLACK);
                     maxCapacity.setFillAlpha(155);
                     LineDataSet currentCapacity = new LineDataSet(currentOccupancy, "Average Capacity");
+                    currentCapacity.setValueFormatter(new IValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                            return new DecimalFormat("###,###,##0").format(value);
+                        }
+                    });
                     currentCapacity.enableDashedLine(10,10,0);
                     currentCapacity.setDrawFilled(true);
                     currentCapacity.setFillColor(Color.YELLOW);
@@ -97,7 +119,27 @@ public class MonthlyFragment extends Fragment {
 
             }
         });
+        XAxis xAxis = stackedLineChart.getXAxis();
+        xAxis.setLabelCount(13,true);
+        xAxis.setTextSize(11f);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new StackedLineGraphXAxisFormatter(Properties.getMonthsOfYear()));
 
+        stackedLineChart.getDescription().setEnabled(false);
+
+        stackedLineChart.setDragEnabled(false);
+        stackedLineChart.setScaleEnabled(false);
+
+        Legend legend = stackedLineChart.getLegend();
+        legend.setEnabled(false);
+
+        YAxis right = stackedLineChart.getAxisRight();
+        right.setEnabled(false);
+
+        YAxis left = stackedLineChart.getAxisLeft();
+        left.setLabelCount(10,false);
+        left.setAxisMinimum(0.0f);
     }
 
 }

@@ -3,11 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment">
-
-    <com.github.mikephil.charting.charts.LineChart
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id = "@+id/stacked_Line_Chart">
-    </com.github.mikephil.charting.charts.LineChart>
-
+        android:weightSum="2"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id = "@+id/stacked_Line_Chart"/>
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Line Chart"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>

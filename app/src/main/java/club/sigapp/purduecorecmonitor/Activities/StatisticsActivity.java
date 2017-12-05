@@ -1,36 +1,18 @@
 package club.sigapp.purduecorecmonitor.Activities;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Adapters.StatisticPagerAdapter;
 import club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment;
 import club.sigapp.purduecorecmonitor.Fragments.WeeklyFragment;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
-import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
-import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
-
 import club.sigapp.purduecorecmonitor.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class StatisticsActivity extends AppCompatActivity {
 

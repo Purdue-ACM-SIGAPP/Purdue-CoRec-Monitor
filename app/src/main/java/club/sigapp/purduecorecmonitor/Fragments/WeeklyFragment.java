@@ -201,7 +201,7 @@ public class WeeklyFragment extends Fragment {
         YAxis left = lineChart.getAxisLeft();
         left.setAxisMinimum(0.0f);
         lineChart.invalidate();
-
+        lineChart.animateXY(1000, 1000);
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {

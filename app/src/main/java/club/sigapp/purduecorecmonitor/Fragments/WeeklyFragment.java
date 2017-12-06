@@ -181,6 +181,7 @@ public class WeeklyFragment extends Fragment {
 
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new BarGraphXAxisFormatter(Properties.getDaysOfWeek()));
 
         lineChart.getDescription().setEnabled(false);
 

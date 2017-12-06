@@ -155,6 +155,12 @@ public class WeeklyFragment extends Fragment {
                     }
                     LineDataSet dataSet = new LineDataSet(entries, "Weekly Data");
                     dataSet.setValueTextSize(16f);
+                    dataSet.setValueFormatter(new IValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                            return new DecimalFormat("###,###,##0").format(value);
+                        }
+                    });
                     dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
                     List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
                     dataSets.add(dataSet);

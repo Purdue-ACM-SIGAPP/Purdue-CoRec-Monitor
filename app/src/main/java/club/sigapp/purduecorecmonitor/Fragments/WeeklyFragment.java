@@ -216,7 +216,7 @@ public class WeeklyFragment extends Fragment {
         left.setAxisMinimum(0.0f);
         lineChart.invalidate();
 
-        api.getLocationDetails("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<LocationsModel>() {
+        api.getLocationDetails(locationId).enqueue(new Callback<LocationsModel>() {
             @Override
             public void onResponse(Call<LocationsModel> call, Response<LocationsModel> response) {
                 if (response.code() == 200) {

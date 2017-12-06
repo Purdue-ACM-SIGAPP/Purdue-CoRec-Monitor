@@ -48,7 +48,6 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.bar_chart)
     BarChart barChart;
 
-    LineData data;
     @BindView(R.id.line_chart)
     LineChart lineChart;
     /* This is never used */
@@ -141,19 +140,39 @@ public class WeeklyFragment extends Fragment {
     }
 
     private void initializeLineChart() {
-        double[] dataObjects = new double[10];
         final ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for(int i = 0; i < dataObjects.length; i++) {
-            entries.add(new Entry(i, 2 * i));
-        }
+        CoRecApi api = CoRecApiHelper.getInstance();
+        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+            @Override
+            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                if (response.code() == 200) {
+                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
+                    List<WeeklyTrendsModel> dailyTrendModel;
+                    for (int i = 0; i < 7; i++) {
+                        dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
+                        entries.add(new Entry(i,averageUsersForTheDay(dailyTrendModel)));
+                    }
+                    LineDataSet dataSet = new LineDataSet(entries, "Weekly Data");
+                    dataSet.setValueTextSize(16f);
+                    dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+                    List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                    dataSets.add(dataSet);
+                    LineData data = new LineData(dataSets);
+                    lineChart.setData(data);
+                    lineChart.invalidate();
+                    lineChart.animateY(1000);
+                } else {
+                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Line Data");
-        dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(dataSet);
-        data = new LineData(dataSets);
-        lineChart.setData(data);
+            @Override
+            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+
+            }
+        });
+
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 

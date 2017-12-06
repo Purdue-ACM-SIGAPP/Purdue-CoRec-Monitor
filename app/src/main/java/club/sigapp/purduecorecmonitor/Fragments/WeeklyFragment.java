@@ -1,6 +1,7 @@
 package club.sigapp.purduecorecmonitor.Fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -162,6 +163,9 @@ public class WeeklyFragment extends Fragment {
                         }
                     });
                     dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+                    dataSet.setColor(Color.BLACK);
+                    dataSet.setLineWidth(2f);
+                    dataSet.enableDashedLine(14f, 6f, 1f);
                     List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
                     dataSets.add(dataSet);
                     LineData data = new LineData(dataSets);

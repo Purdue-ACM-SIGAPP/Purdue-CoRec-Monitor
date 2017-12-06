@@ -27,11 +27,15 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private StatisticPagerAdapter pagerAdapter;
 
+    protected String locationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
         ButterKnife.bind(this);
+
+        locationId = getIntent().getStringExtra("LocationId");
 
         initToolbar();
         setupTabLayout();
@@ -55,5 +59,9 @@ public class StatisticsActivity extends AppCompatActivity {
         pagerAdapter.addFragment(new MonthlyFragment(), "Monthly", false);
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public String getLocationId() {
+        return locationId;
     }
 }

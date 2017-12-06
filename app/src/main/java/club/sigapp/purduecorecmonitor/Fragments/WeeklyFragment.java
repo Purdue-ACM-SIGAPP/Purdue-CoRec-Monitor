@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
@@ -44,6 +45,8 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.bar_chart)
     BarChart barChart;
 
+    String locationId;
+
     /* This is never used */
     public WeeklyFragment() {
         // Required empty public constructor
@@ -58,6 +61,8 @@ public class WeeklyFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_weekly, container, false);
         ButterKnife.bind(this, view);
 
+        locationId = ((StatisticsActivity)getActivity()).getLocationId();
+
         initializeBarChart();
         return view;
     }
@@ -67,7 +72,7 @@ public class WeeklyFragment extends Fragment {
         final List<BarEntry> barEntries = new ArrayList<>();
 
         CoRecApi api = CoRecApiHelper.getInstance();
-        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+        api.getLocationWeeklyTrend(locationId).enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
             @Override
             public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
                 if (response.code() == 200) {

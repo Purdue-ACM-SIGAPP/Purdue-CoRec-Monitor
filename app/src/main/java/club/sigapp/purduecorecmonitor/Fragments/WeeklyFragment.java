@@ -1,6 +1,7 @@
 package club.sigapp.purduecorecmonitor.Fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -17,8 +19,11 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -44,6 +49,8 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.bar_chart)
     BarChart barChart;
 
+    @BindView(R.id.line_chart)
+    LineChart lineChart;
     /* This is never used */
     public WeeklyFragment() {
         // Required empty public constructor
@@ -59,6 +66,7 @@ public class WeeklyFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         initializeBarChart();
+        initializeLineChart();
         return view;
     }
 
@@ -130,6 +138,70 @@ public class WeeklyFragment extends Fragment {
 
             }
         });
+    }
+
+    private void initializeLineChart() {
+        final ArrayList<Entry> entries = new ArrayList<Entry>();
+
+        CoRecApi api = CoRecApiHelper.getInstance();
+        api.getLocationWeeklyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+            @Override
+            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                if (response.code() == 200) {
+                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
+                    List<WeeklyTrendsModel> dailyTrendModel;
+                    for (int i = 0; i < 7; i++) {
+                        dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
+                        entries.add(new Entry(i,averageUsersForTheDay(dailyTrendModel)));
+                    }
+                    LineDataSet dataSet = new LineDataSet(entries, "Weekly Data");
+                    dataSet.setValueTextSize(16f);
+                    dataSet.setValueFormatter(new IValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                            return new DecimalFormat("###,###,##0").format(value);
+                        }
+                    });
+                    dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+                    dataSet.setColor(Color.BLACK);
+                    dataSet.setLineWidth(2f);
+                    dataSet.enableDashedLine(14f, 6f, 1f);
+                    List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                    dataSets.add(dataSet);
+                    LineData data = new LineData(dataSets);
+                    lineChart.setData(data);
+                    lineChart.invalidate();
+                    lineChart.animateY(1000);
+                } else {
+                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+
+            }
+        });
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new BarGraphXAxisFormatter(Properties.getDaysOfWeek()));
+
+        lineChart.getDescription().setEnabled(false);
+
+        lineChart.setDragEnabled(false);
+        lineChart.setScaleEnabled(false);
+
+        Legend legend = lineChart.getLegend();
+        legend.setEnabled(false);
+
+        YAxis right = lineChart.getAxisRight();
+        right.setEnabled(false);
+
+        YAxis left = lineChart.getAxisLeft();
+        left.setAxisMinimum(0.0f);
+        lineChart.invalidate();
+
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {

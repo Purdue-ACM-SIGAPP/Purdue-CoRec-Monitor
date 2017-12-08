@@ -215,7 +215,6 @@ public class WeeklyFragment extends Fragment {
         YAxis left = lineChart.getAxisLeft();
         left.setAxisMinimum(0.0f);
         lineChart.invalidate();
-        lineChart.animateXY(1000, 1000);
 
         api.getLocationDetails(locationId).enqueue(new Callback<LocationsModel>() {
             @Override
@@ -282,7 +281,7 @@ public class WeeklyFragment extends Fragment {
         if (capacity != 0) {
             left.setAxisMaximum(capacity);
         }
-
+        lineChart.animateXY(1000, 1000);
         lineChart.invalidate();
     }
 

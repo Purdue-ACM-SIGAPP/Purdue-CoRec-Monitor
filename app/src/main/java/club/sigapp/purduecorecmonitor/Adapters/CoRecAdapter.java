@@ -160,6 +160,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
             String locationId = locations.get(this.getLayoutPosition()).LocationId;
             Intent intent = new Intent(context, StatisticsActivity.class);
             intent.putExtra("LocationId", locationId);
+            intent.putExtra("CorecRoom", locations.get(this.getLayoutPosition()).LocationName);
             context.startActivity(intent);
         }
 

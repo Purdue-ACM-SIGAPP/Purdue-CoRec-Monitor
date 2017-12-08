@@ -26,6 +26,7 @@ public class StatisticsActivity extends AppCompatActivity {
     private StatisticPagerAdapter pagerAdapter;
 
     protected String locationId;
+    protected String roomName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +35,14 @@ public class StatisticsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         locationId = getIntent().getStringExtra("LocationId");
-
+        roomName = getIntent().getStringExtra("CorecRoom");
         initToolbar();
         setupTabLayout();
 
     }
 
     private void initToolbar() {
-        toolbar.setTitle(R.string.app_name);
+        toolbar.setTitle(roomName);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

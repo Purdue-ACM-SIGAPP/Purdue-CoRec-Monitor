@@ -1,6 +1,7 @@
 package club.sigapp.purduecorecmonitor.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import butterknife.ButterKnife;
+import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 
 import club.sigapp.purduecorecmonitor.R;
@@ -150,6 +152,16 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         public AreaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick(R.id.card_main)
+        public void onClickCard() {
+
+            String locationId = locations.get(this.getLayoutPosition()).LocationId;
+            Intent intent = new Intent(context, StatisticsActivity.class);
+            intent.putExtra("LocationId", locationId);
+            intent.putExtra("CorecRoom", locations.get(this.getLayoutPosition()).LocationName);
+            context.startActivity(intent);
         }
 
         @OnClick(R.id.fav_button)

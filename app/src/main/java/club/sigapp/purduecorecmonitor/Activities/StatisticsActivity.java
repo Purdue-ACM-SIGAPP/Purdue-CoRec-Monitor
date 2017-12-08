@@ -1,12 +1,11 @@
 package club.sigapp.purduecorecmonitor.Activities;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,14 +25,19 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private StatisticPagerAdapter pagerAdapter;
 
+    protected String locationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
         ButterKnife.bind(this);
 
+        locationId = getIntent().getStringExtra("LocationId");
+
         initToolbar();
         setupTabLayout();
+
     }
 
     private void initToolbar() {
@@ -46,7 +50,6 @@ public class StatisticsActivity extends AppCompatActivity {
         }
     }
 
-
     private void setupTabLayout() {
         pagerAdapter = new StatisticPagerAdapter
                 (getSupportFragmentManager());
@@ -54,5 +57,9 @@ public class StatisticsActivity extends AppCompatActivity {
         pagerAdapter.addFragment(new MonthlyFragment(), "Monthly", false);
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public String getLocationId() {
+        return locationId;
     }
 }

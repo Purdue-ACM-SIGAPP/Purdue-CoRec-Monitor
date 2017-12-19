@@ -2,7 +2,6 @@ package club.sigapp.purduecorecmonitor.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,21 +11,18 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
-
 import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.Favorites;
 

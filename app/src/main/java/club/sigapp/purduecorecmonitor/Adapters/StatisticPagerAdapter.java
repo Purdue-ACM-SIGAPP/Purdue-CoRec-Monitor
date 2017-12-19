@@ -7,10 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment;
-import club.sigapp.purduecorecmonitor.Fragments.WeeklyFragment;
-
-
 public class StatisticPagerAdapter extends FragmentPagerAdapter {
 
     private final List<Fragment> mFragments = new ArrayList<>();

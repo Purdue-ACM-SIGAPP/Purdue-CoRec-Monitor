@@ -3,10 +3,6 @@ package club.sigapp.purduecorecmonitor.Utils;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
-/**
- * Created by josh on 12/5/17.
- */
-
 public class LineGraphXAxisFormatter implements IAxisValueFormatter {
     String[] values;
 

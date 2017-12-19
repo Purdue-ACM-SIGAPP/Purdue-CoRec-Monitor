@@ -8,14 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +20,6 @@ import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
-import club.sigapp.purduecorecmonitor.Utils.Favorites;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

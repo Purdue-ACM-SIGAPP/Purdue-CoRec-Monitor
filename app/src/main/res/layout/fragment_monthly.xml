@@ -4,19 +4,32 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context="club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="2"
-        android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_weight="1">
-        <com.github.mikephil.charting.charts.LineChart
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id = "@+id/stacked_Line_Chart"/>
-    </LinearLayout>
+            android:layout_height="500dp"
+            android:layout_weight="1">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/stacked_Line_Chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0"
+            android:paddingTop="6dp"
+            android:text="@string/data_represents_attendance_versus_capacity"
+            android:textAlignment="center"
+            android:textColor="@color/dark_gray" />
     </LinearLayout>
 </FrameLayout>

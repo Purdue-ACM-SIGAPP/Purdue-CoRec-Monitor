@@ -27,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.MonthlyTrendsModel;
 import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
@@ -43,6 +44,8 @@ public class MonthlyFragment extends Fragment {
     @BindView(R.id.stacked_Line_Chart)
     LineChart stackedLineChart;
 
+    String locationId;
+
     public MonthlyFragment() {
         // Required empty public constructor
     }
@@ -53,6 +56,8 @@ public class MonthlyFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_monthly, container, false);
         ButterKnife.bind(this, view);
+
+        locationId = ((StatisticsActivity)getActivity()).getLocationId();
 
         initializeStackedLineChart();
         return view;
@@ -66,7 +71,7 @@ public class MonthlyFragment extends Fragment {
 
         CoRecApi api = CoRecApiHelper.getInstance();
 
-        api.getLocationMonthlyTrend("7071edb7-856e-4d05-8957-4001484f9aec").enqueue(new Callback<List<MonthlyTrendsModel>>() {
+        api.getLocationMonthlyTrend(locationId).enqueue(new Callback<List<MonthlyTrendsModel>>() {
             @Override
             public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
                 if(response.code() == 200){

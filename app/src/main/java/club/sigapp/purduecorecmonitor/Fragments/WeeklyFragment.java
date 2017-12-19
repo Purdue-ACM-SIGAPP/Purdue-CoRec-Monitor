@@ -1,8 +1,9 @@
 package club.sigapp.purduecorecmonitor.Fragments;
 
-
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,11 +45,22 @@ import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.BarGraphXAxisFormatter;
 import club.sigapp.purduecorecmonitor.Utils.LineGraphXAxisFormatter;
 import club.sigapp.purduecorecmonitor.Utils.Properties;
+import club.sigapp.purduecorecmonitor.Utils.SharedPrefsHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WeeklyFragment extends Fragment {
+
+    private static final String SHOW_ONBOARDING_COUNTDOWN = "show_onboarding_countdown";
+
+    /**
+     * The number of times to show the snackbar explaining how to start a timer
+     * unless the user manually dismisses it.
+     */
+    private static final int ONBOARDING_COUNTDOWN = 5;
+
+    Snackbar mOnboardingSnackbar;
 
     @BindView(R.id.bar_chart)
     BarChart barChart;
@@ -78,6 +90,7 @@ public class WeeklyFragment extends Fragment {
 
         locationId = ((StatisticsActivity)getActivity()).getLocationId();
 
+        showOnboardingIfNecessary();
         initializeBarChart();
         initializeLineChart();
         return view;
@@ -301,6 +314,73 @@ public class WeeklyFragment extends Fragment {
             average += data.Headcount;
         }
         return average;
+    }
+
+    /**
+     * When the user first accesses the Machines Activity, we should show
+     * a snackbar telling them how to create a timer. We hope this will increase
+     * the use of timers.
+     */
+    private void showOnboardingIfNecessary() {
+        int numberOfTimesToShowOnboarding =
+                SharedPrefsHelper.getSharedPrefs(getContext()).getInt(SHOW_ONBOARDING_COUNTDOWN, ONBOARDING_COUNTDOWN);
+
+        if ((mOnboardingSnackbar != null && !mOnboardingSnackbar.isShown()))
+            return;
+
+        //add BuildConfig.DEBUG to this statement to make it display always for testing.
+        if (numberOfTimesToShowOnboarding > 0) {
+            //show onboarding snackbar.
+            mOnboardingSnackbar = Snackbar
+                    .make(lineChart,
+                            "Tap a day of the week in the bar graph to view hourly statistics.",
+                            Snackbar.LENGTH_INDEFINITE)
+                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        /**
+                         * If the user dismisses the snackbar, we should respect their
+                         * desire to not show the tutorial again.
+                         * We do this by setting the countdown to zero.
+                         */
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            if (event == DISMISS_EVENT_SWIPE) {
+                                SharedPrefsHelper
+                                        .getSharedPrefs(getContext())
+                                        .edit()
+                                        .putInt(SHOW_ONBOARDING_COUNTDOWN,
+                                                0)
+                                        .apply();
+                            }
+                        }
+                    })
+                    .setAction("Don't show again", new View.OnClickListener() {
+
+                        /**
+                         * If the user dismisses the snackbar, we should respect their
+                         * desire to not show the tutorial again.
+                         * We do this by setting the countdown to zero.
+                         */
+                        @Override
+                        public void onClick(View v) {
+                            SharedPrefsHelper
+                                    .getSharedPrefs(getContext())
+                                    .edit()
+                                    .putInt(SHOW_ONBOARDING_COUNTDOWN,
+                                            0)
+                                    .apply();
+                        }
+                    });
+
+            mOnboardingSnackbar.show();
+
+            SharedPrefsHelper
+                    .getSharedPrefs(getContext())
+                    .edit()
+                    .putInt(SHOW_ONBOARDING_COUNTDOWN,
+                            --numberOfTimesToShowOnboarding)
+                    .apply();
+        }
     }
 
 }

@@ -17,11 +17,11 @@ public interface CoRecApi {
     @GET("locations/{location}")
     Call<LocationsModel> getLocationDetails(@Path("location") String location);
 
-    @GET("MonthlyTrends/{location}")
-    Call<List<MonthlyTrendsModel>> getLocationMonthlyTrend(@Path("location") String location);
+    @GET("MonthlyTrends")
+    Call<List<MonthlyTrendsModel>> getLocationMonthlyTrend();
 
-    @GET("WeeklyTrends/{location}")
-    Call<List<WeeklyTrendsModel>> getLocationWeeklyTrend(@Path("location") String location);
+    @GET("WeeklyTrends")
+    Call<List<WeeklyTrendsModel>> getLocationWeeklyTrend();
 
     @GET("lastupdatedtime/{location}")
     Call<List<LastUpdatedModel>> getLocationLastUpdatedTime(@Path("location") String location);

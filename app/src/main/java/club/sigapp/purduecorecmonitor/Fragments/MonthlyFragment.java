@@ -22,12 +22,14 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.MonthlyTrendsModel;
+import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
@@ -53,16 +55,16 @@ public class MonthlyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_monthly, container, false);
+        View view = inflater.inflate(R.layout.fragment_monthly, container, false);
         ButterKnife.bind(this, view);
 
-        locationId = ((StatisticsActivity)getActivity()).getLocationId();
+        locationId = ((StatisticsActivity) getActivity()).getLocationId();
 
         initializeStackedLineChart();
         return view;
     }
 
-    private void initializeStackedLineChart(){
+    private void initializeStackedLineChart() {
         final List<Entry> currentOccupancy = new ArrayList<>();
         final List<Entry> maxOccupancy = new ArrayList<>();
         final List<ILineDataSet> chartLines = new ArrayList<>();
@@ -70,15 +72,21 @@ public class MonthlyFragment extends Fragment {
 
         CoRecApi api = CoRecApiHelper.getInstance();
 
-        api.getLocationMonthlyTrend(locationId).enqueue(new Callback<List<MonthlyTrendsModel>>() {
+        api.getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
             @Override
             public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
-                if(response.code() == 200){
+                if (response.code() == 200) {
                     List<MonthlyTrendsModel> monthlyTrendsModel = response.body();
+
+                    for (Iterator<MonthlyTrendsModel> iterator = monthlyTrendsModel.iterator(); iterator.hasNext(); ) {
+                        if (iterator.next().LocationId.equals(locationId))
+                            iterator.remove();
+                    }
+
                     Collections.sort(monthlyTrendsModel, new MonthlyComparator());
-                    for(MonthlyTrendsModel data : monthlyTrendsModel){
-                        currentOccupancy.add(new Entry(data.Month,data.Headcount));
-                        maxOccupancy.add(new Entry(data.Month,data.Capacity));
+                    for (MonthlyTrendsModel data : monthlyTrendsModel) {
+                        currentOccupancy.add(new Entry(data.EntryMonth, data.Count));
+                        maxOccupancy.add(new Entry(data.EntryMonth, data.Capacity));
                     }
 
                     LineDataSet maxCapacity = new LineDataSet(maxOccupancy, "Max Capacity");
@@ -98,7 +106,7 @@ public class MonthlyFragment extends Fragment {
                             return new DecimalFormat("###,###,##0").format(value);
                         }
                     });
-                    currentCapacity.enableDashedLine(10,10,0);
+                    currentCapacity.enableDashedLine(10, 10, 0);
                     currentCapacity.setDrawFilled(true);
                     currentCapacity.setFillColor(Color.YELLOW);
                     chartLines.add(maxCapacity);
@@ -121,7 +129,7 @@ public class MonthlyFragment extends Fragment {
             }
         });
         XAxis xAxis = stackedLineChart.getXAxis();
-        xAxis.setLabelCount(13,true);
+        xAxis.setLabelCount(13, true);
         xAxis.setTextSize(11f);
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -139,7 +147,7 @@ public class MonthlyFragment extends Fragment {
         right.setEnabled(false);
 
         YAxis left = stackedLineChart.getAxisLeft();
-        left.setLabelCount(10,false);
+        left.setLabelCount(10, false);
         left.setAxisMinimum(0.0f);
     }
 

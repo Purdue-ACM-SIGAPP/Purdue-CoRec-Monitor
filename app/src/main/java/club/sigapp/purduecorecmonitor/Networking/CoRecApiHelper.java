@@ -9,7 +9,7 @@ public class CoRecApiHelper {
     public static CoRecApi getInstance() {
         if (coRecApi == null) {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://www.purdue.edu/DRSFacilityUsageAPI/")
+                    .baseUrl("https://www.purdue.edu/drsfacilityusage/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

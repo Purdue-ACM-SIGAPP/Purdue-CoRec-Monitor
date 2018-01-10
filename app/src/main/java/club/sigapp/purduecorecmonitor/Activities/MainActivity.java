@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 loadingBar.setVisibility(View.GONE);
                 boolean hasNonZero = false;
                 for (LocationsModel location : response.body()) {
-                    if (location.Headcount != 0) {
+                    if (location.Count != 0) {
                         hasNonZero = true;
                         break;
                     }
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
                             .setTitle("CoRec Website Error")
                             .setMessage("It appears that the CoRec website returned all locations as" +
-                                    " having no people. This probably means that the website is down.")
+                                    " having no people. This probably means the CoRec is closed, or the website is down.")
                             .setCancelable(false)
                             .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
                                 @Override

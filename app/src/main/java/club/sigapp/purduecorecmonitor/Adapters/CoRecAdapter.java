@@ -80,23 +80,23 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     @Override
     public void onBindViewHolder(AreaViewHolder holder, int position) {
         holder.cardTitle.setText(locations.get(position).LocationName);
-        String headString = "Headcount: " + locations.get(position).Headcount + " / Max: " + locations.get(position).Capacity;
+        String headString = "Headcount: " + locations.get(position).Count + " / Max: " + locations.get(position).Capacity;
         holder.headCount.setText(headString);
 
-        switch(locations.get(position).ZoneName){
-            case "Basement":
+        switch(locations.get(position).Location.Zone.ZoneName){
+            case "CoRec Basement":
                 Picasso.with(context).load(R.drawable.ic_floor_basement).fit().into(holder.icon);
                 break;
-            case "Level 1":
+            case "CoRec Level 1":
                 Picasso.with(context).load(R.drawable.ic_floor_one).fit().into(holder.icon);
                 break;
-            case "Level 2":
+            case "CoRec Level 2":
                 Picasso.with(context).load(R.drawable.ic_floor_two).fit().into(holder.icon);
                 break;
-            case "Level 3":
+            case "CoRec Level 3":
                 Picasso.with(context).load(R.drawable.ic_floor_three).fit().into(holder.icon);
                 break;
-            case "Level 4":
+            case "CoRec Level 4":
                 Picasso.with(context).load(R.drawable.ic_floor_four).fit().into(holder.icon);
                 break;
             case "TREC":

@@ -69,7 +69,6 @@ public class MonthlyFragment extends Fragment {
         final List<Entry> maxOccupancy = new ArrayList<>();
         final List<ILineDataSet> chartLines = new ArrayList<>();
 
-
         CoRecApi api = CoRecApiHelper.getInstance();
 
         api.getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
@@ -79,7 +78,7 @@ public class MonthlyFragment extends Fragment {
                     List<MonthlyTrendsModel> monthlyTrendsModel = response.body();
 
                     for (Iterator<MonthlyTrendsModel> iterator = monthlyTrendsModel.iterator(); iterator.hasNext(); ) {
-                        if (iterator.next().LocationId.equals(locationId))
+                        if (!iterator.next().LocationId.equals(locationId))
                             iterator.remove();
                     }
 

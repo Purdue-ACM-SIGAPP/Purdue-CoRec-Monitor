@@ -100,7 +100,7 @@ public class WeeklyFragment extends Fragment {
                     weeklyTrendsModels = response.body();
 
                     for (Iterator<WeeklyTrendsModel> iterator = weeklyTrendsModels.iterator(); iterator.hasNext(); ) {
-                        if (iterator.next().LocationId.equals(locationId))
+                        if (!iterator.next().LocationId.equals(locationId))
                             iterator.remove();
                     }
 
@@ -168,7 +168,8 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Log.d("Weekly", Properties.getDaysOfWeek()[(int) e.getX()]);
-                updateLineChart((int) e.getX());
+                Toast.makeText(getContext(), "The CoRec website is currently broken. Per-hour charts don't work.", Toast.LENGTH_SHORT).show();
+                // updateLineChart((int) e.getX());
             }
 
             @Override

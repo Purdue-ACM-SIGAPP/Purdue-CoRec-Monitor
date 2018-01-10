@@ -161,8 +161,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @OnClick(R.id.card_main)
         public void onClickCard() {
-
-            String locationId = locations.get(this.getLayoutPosition()).LocationId;
+            String locationId = locations.get(this.getLayoutPosition()).Location.LocationId;
             Intent intent = new Intent(context, StatisticsActivity.class);
             intent.putExtra("LocationId", locationId);
             intent.putExtra("CorecRoom", locations.get(this.getLayoutPosition()).LocationName);

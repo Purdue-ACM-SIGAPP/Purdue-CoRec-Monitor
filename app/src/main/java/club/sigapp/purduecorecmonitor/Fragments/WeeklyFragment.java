@@ -27,6 +27,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.EntryXComparator;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
@@ -168,8 +169,7 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Log.d("Weekly", Properties.getDaysOfWeek()[(int) e.getX()]);
-                Toast.makeText(getContext(), "The CoRec website is currently broken. Per-hour charts don't work.", Toast.LENGTH_SHORT).show();
-                // updateLineChart((int) e.getX());
+                updateLineChart((int) e.getX());
             }
 
             @Override
@@ -236,6 +236,7 @@ public class WeeklyFragment extends Fragment {
             entries.add(new Entry(data.EntryHour, data.Count));
         }
         Collections.reverse(entries);
+        Collections.sort(entries, new EntryXComparator());
         LineDataSet dataSet = new LineDataSet(entries, "Daily Data");
         dataSet.setValueTextSize(16f);
         dataSet.setValueFormatter(new IValueFormatter() {

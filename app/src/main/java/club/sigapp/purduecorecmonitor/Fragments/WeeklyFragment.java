@@ -105,7 +105,8 @@ public class WeeklyFragment extends Fragment {
                             iterator.remove();
                     }
 
-                    capacity = weeklyTrendsModels.get(0).Capacity;
+                    if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
+                        capacity = weeklyTrendsModels.get(0).Capacity;
 
                     initializeBarChart();
                     initializeLineChart();

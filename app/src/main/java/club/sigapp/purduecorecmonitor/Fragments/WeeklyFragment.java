@@ -352,7 +352,7 @@ public class WeeklyFragment extends Fragment {
                                             0)
                                     .apply();
                         }
-                    });
+                    }).setActionTextColor(Color.WHITE);
 
             mOnboardingSnackbar.show();
 

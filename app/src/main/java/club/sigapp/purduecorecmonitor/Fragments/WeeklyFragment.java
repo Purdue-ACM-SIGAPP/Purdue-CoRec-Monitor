@@ -336,7 +336,7 @@ public class WeeklyFragment extends Fragment {
                             }
                         }
                     })
-                    .setAction("Don't show again", new View.OnClickListener() {
+                    .setAction("Don't show\nagain", new View.OnClickListener() {
 
                         /**
                          * If the user dismisses the snackbar, we should respect their

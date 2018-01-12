@@ -105,7 +105,8 @@ public class WeeklyFragment extends Fragment {
                             iterator.remove();
                     }
 
-                    capacity = weeklyTrendsModels.get(0).Capacity;
+                    if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
+                        capacity = weeklyTrendsModels.get(0).Capacity;
 
                     initializeBarChart();
                     initializeLineChart();
@@ -336,7 +337,7 @@ public class WeeklyFragment extends Fragment {
                             }
                         }
                     })
-                    .setAction("Don't show again", new View.OnClickListener() {
+                    .setAction("Don't show\nagain", new View.OnClickListener() {
 
                         /**
                          * If the user dismisses the snackbar, we should respect their
@@ -352,7 +353,7 @@ public class WeeklyFragment extends Fragment {
                                             0)
                                     .apply();
                         }
-                    });
+                    }).setActionTextColor(Color.WHITE);
 
             mOnboardingSnackbar.show();
 

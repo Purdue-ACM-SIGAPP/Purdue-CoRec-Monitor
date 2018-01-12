@@ -103,13 +103,13 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 Picasso.with(context).load(R.drawable.ic_floor_trec).fit().into(holder.icon);
                 break;
             case "Comp Pool":
-                Picasso.with(context).load(R.mipmap.ic_launcher).fit().into(holder.icon);
+                Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
                 break;
             case "Dive Pool":
-                Picasso.with(context).load(R.mipmap.ic_launcher).fit().into(holder.icon);
+                Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
                 break;
             case "Rec Pool":
-                Picasso.with(context).load(R.mipmap.ic_launcher).fit().into(holder.icon);
+                Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
                 break;
             default:
                 Log.e("MainActivity", "Unknown zone name.");

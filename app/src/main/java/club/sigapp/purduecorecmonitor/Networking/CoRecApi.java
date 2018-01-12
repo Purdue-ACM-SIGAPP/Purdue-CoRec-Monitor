@@ -11,17 +11,17 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface CoRecApi {
-    @GET("currentactivity")
+    @GET("CurrentActivity")
     Call<List<LocationsModel>> getAllLocations();
 
     @GET("locations/{location}")
     Call<LocationsModel> getLocationDetails(@Path("location") String location);
 
-    @GET("monthlytrends/{location}")
-    Call<List<MonthlyTrendsModel>> getLocationMonthlyTrend(@Path("location") String location);
+    @GET("MonthlyTrends")
+    Call<List<MonthlyTrendsModel>> getLocationMonthlyTrend();
 
-    @GET("weeklytrends/{location}")
-    Call<List<WeeklyTrendsModel>> getLocationWeeklyTrend(@Path("location") String location);
+    @GET("WeeklyTrends")
+    Call<List<WeeklyTrendsModel>> getLocationWeeklyTrend();
 
     @GET("lastupdatedtime/{location}")
     Call<List<LastUpdatedModel>> getLocationLastUpdatedTime(@Path("location") String location);

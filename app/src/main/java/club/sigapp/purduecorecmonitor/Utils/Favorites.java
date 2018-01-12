@@ -10,7 +10,8 @@ public class Favorites {
     public static void addFavorite(Context c, String newFavorite) {
         SharedPreferences shared = SharedPrefsHelper.getSharedPrefs(c);
         if (shared.contains("favorites")) {
-            Set<String> favorites = shared.getStringSet("favorites", null);
+            Set<String> favorites = shared.getStringSet("favor" +
+                    "ites", null);
             if (!favorites.contains(newFavorite)) {
                 favorites.add(newFavorite);
                 shared.edit().remove("favorites").apply();

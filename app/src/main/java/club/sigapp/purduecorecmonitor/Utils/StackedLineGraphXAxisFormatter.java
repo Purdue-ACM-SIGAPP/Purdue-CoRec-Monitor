@@ -12,6 +12,7 @@ public class StackedLineGraphXAxisFormatter implements IAxisValueFormatter {
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-        return values[(int) value];
+        int valueForArray = ((int) Math.floor(value)) - 1;
+        return values[valueForArray];
     }
 }

@@ -1,10 +1,9 @@
 package club.sigapp.purduecorecmonitor.Models;
 
-public class MonthlyTrendsModel {
-    public Location Location;
+public class Location {
+    public Zone Zone;
     public String LocationId;
     public String LocationName;
+    public String ZoneId;
     public int Capacity;
-    public int Count;
-    public int EntryMonth;
 }

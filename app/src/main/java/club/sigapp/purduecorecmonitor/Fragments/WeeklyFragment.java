@@ -27,11 +27,13 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.EntryXComparator;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -85,45 +87,29 @@ public class WeeklyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_weekly, container, false);
+        View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         ButterKnife.bind(this, view);
 
-        locationId = ((StatisticsActivity)getActivity()).getLocationId();
+        locationId = ((StatisticsActivity) getActivity()).getLocationId();
 
         showOnboardingIfNecessary();
-        initializeBarChart();
-        initializeLineChart();
-        return view;
-    }
 
-    private void initializeBarChart() {
-
-        final List<BarEntry> barEntries = new ArrayList<>();
-
-        CoRecApi api = CoRecApiHelper.getInstance();
-        api.getLocationWeeklyTrend(locationId).enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+        CoRecApiHelper.getInstance().getLocationWeeklyTrend().enqueue(new Callback<List<WeeklyTrendsModel>>() {
             @Override
             public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
                 if (response.code() == 200) {
                     weeklyTrendsModels = response.body();
-                    List<WeeklyTrendsModel> dailyTrendModel;
-                    for (int i = 0; i < 7; i++) {
-                       dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
-                        barEntries.add(new BarEntry(i,averageUsersForTheDay(dailyTrendModel)));
+
+                    for (Iterator<WeeklyTrendsModel> iterator = weeklyTrendsModels.iterator(); iterator.hasNext(); ) {
+                        if (!iterator.next().LocationId.equals(locationId))
+                            iterator.remove();
                     }
-                    BarDataSet barDataSet = new BarDataSet(barEntries, "Weekly Data");
-                    barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-                    barDataSet.setValueTextSize(16f);
-                    barDataSet.setValueFormatter(new IValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                            return new DecimalFormat("###,###,##0").format(value);
-                        }
-                    });
-                    BarData barData = new BarData(barDataSet);
-                    barChart.setData(barData);
-                    barChart.invalidate();
-                    barChart.animateY(1000);
+
+                    if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
+                        capacity = weeklyTrendsModels.get(0).Capacity;
+
+                    initializeBarChart();
+                    initializeLineChart();
                 } else {
                     Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
@@ -134,6 +120,33 @@ public class WeeklyFragment extends Fragment {
 
             }
         });
+
+        return view;
+    }
+
+    private void initializeBarChart() {
+
+        List<BarEntry> barEntries = new ArrayList<>();
+
+        List<WeeklyTrendsModel> dailyTrendModel;
+
+        for (int i = 0; i < 7; i++) {
+            dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
+            barEntries.add(new BarEntry(i, averageUsersForTheDay(dailyTrendModel)));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Weekly Data");
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextSize(16f);
+        barDataSet.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return new DecimalFormat("###,###,##0").format(value);
+            }
+        });
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barChart.invalidate();
+        barChart.animateY(1000);
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -156,8 +169,8 @@ public class WeeklyFragment extends Fragment {
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                Log.d("Weekly", Properties.getDaysOfWeek()[(int)e.getX()]);
-                updateLineChart((int)e.getX());
+                Log.d("Weekly", Properties.getDaysOfWeek()[(int) e.getX()]);
+                updateLineChart((int) e.getX());
             }
 
             @Override
@@ -170,45 +183,29 @@ public class WeeklyFragment extends Fragment {
     private void initializeLineChart() {
         final ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        CoRecApi api = CoRecApiHelper.getInstance();
-        api.getLocationWeeklyTrend(locationId).enqueue(new Callback<List<WeeklyTrendsModel>>() { //the running one
+        List<WeeklyTrendsModel> dailyTrendModel;
+        for (int i = 0; i < 7; i++) {
+            dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
+            entries.add(new Entry(i, averageUsersForTheDay(dailyTrendModel)));
+        }
+        LineDataSet dataSet = new LineDataSet(entries, "Weekly Data");
+        dataSet.setValueTextSize(16f);
+        dataSet.setValueFormatter(new IValueFormatter() {
             @Override
-            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
-                if (response.code() == 200) {
-                    List<WeeklyTrendsModel> weeklyTrendsModels = response.body();
-                    List<WeeklyTrendsModel> dailyTrendModel;
-                    for (int i = 0; i < 7; i++) {
-                        dailyTrendModel = convertWeekToDay(i, weeklyTrendsModels);
-                        entries.add(new Entry(i,averageUsersForTheDay(dailyTrendModel)));
-                    }
-                    LineDataSet dataSet = new LineDataSet(entries, "Weekly Data");
-                    dataSet.setValueTextSize(16f);
-                    dataSet.setValueFormatter(new IValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                            return new DecimalFormat("###,###,##0").format(value);
-                        }
-                    });
-                    dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-                    dataSet.setColor(Color.BLACK);
-                    dataSet.setLineWidth(2f);
-                    dataSet.enableDashedLine(14f, 6f, 1f);
-                    List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-                    dataSets.add(dataSet);
-                    LineData data = new LineData(dataSets);
-                    lineChart.setData(data);
-                    lineChart.invalidate();
-                    lineChart.animateY(1000);
-                } else {
-                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
-
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return new DecimalFormat("###,###,##0").format(value);
             }
         });
+        dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        dataSet.setColor(Color.BLACK);
+        dataSet.setLineWidth(2f);
+        dataSet.enableDashedLine(14f, 6f, 1f);
+        List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(dataSet);
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+        lineChart.invalidate();
+        lineChart.animateY(1000);
 
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -228,21 +225,6 @@ public class WeeklyFragment extends Fragment {
         YAxis left = lineChart.getAxisLeft();
         left.setAxisMinimum(0.0f);
         lineChart.invalidate();
-
-        api.getLocationDetails(locationId).enqueue(new Callback<LocationsModel>() {
-            @Override
-            public void onResponse(Call<LocationsModel> call, Response<LocationsModel> response) {
-                if (response.code() == 200) {
-                    LocationsModel location = response.body();
-                    capacity = location.Capacity;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LocationsModel> call, Throwable t) {
-
-            }
-        });
     }
 
     private void updateLineChart(int day) {
@@ -252,9 +234,10 @@ public class WeeklyFragment extends Fragment {
         xAxis.setValueFormatter(new LineGraphXAxisFormatter(Properties.getHoursOfDay()));
         for (int i = 0; i < dayOfWeek.size(); i++) {
             WeeklyTrendsModel data = dayOfWeek.get(i);
-            entries.add(new Entry(data.Hour, data.Headcount));
+            entries.add(new Entry(data.EntryHour, data.Count));
         }
         Collections.reverse(entries);
+        Collections.sort(entries, new EntryXComparator());
         LineDataSet dataSet = new LineDataSet(entries, "Daily Data");
         dataSet.setValueTextSize(16f);
         dataSet.setValueFormatter(new IValueFormatter() {
@@ -301,7 +284,7 @@ public class WeeklyFragment extends Fragment {
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {
         List<WeeklyTrendsModel> dayDataSet = new ArrayList<>();
         for (WeeklyTrendsModel data : weeklyTrendsModels) {
-            if (data.DayOfWeek == dayOfWeek) {
+            if (data.EntryDayOfWeek == dayOfWeek) {
                 dayDataSet.add(data);
             }
         }
@@ -311,7 +294,7 @@ public class WeeklyFragment extends Fragment {
     private float averageUsersForTheDay(List<WeeklyTrendsModel> weeklyTrendsModels) {
         float average = 0;
         for (WeeklyTrendsModel data : weeklyTrendsModels) {
-            average += data.Headcount;
+            average += data.Count;
         }
         return average;
     }
@@ -354,7 +337,7 @@ public class WeeklyFragment extends Fragment {
                             }
                         }
                     })
-                    .setAction("Don't show again", new View.OnClickListener() {
+                    .setAction("Don't show\nagain", new View.OnClickListener() {
 
                         /**
                          * If the user dismisses the snackbar, we should respect their
@@ -370,7 +353,7 @@ public class WeeklyFragment extends Fragment {
                                             0)
                                     .apply();
                         }
-                    });
+                    }).setActionTextColor(Color.WHITE);
 
             mOnboardingSnackbar.show();
 

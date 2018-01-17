@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -72,6 +75,15 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.line_chart)
     LineChart lineChart;
 
+    @BindView(R.id.statProgressBar)
+    ProgressBar statProgressBar;
+
+    @BindView(R.id.statStatus)
+    TextView statStatus;
+
+    @BindView(R.id.weeklyStatsLayout)
+    LinearLayout weeklyStatsLayout;
+
     List<WeeklyTrendsModel> weeklyTrendsModels;
 
     private int capacity = 0;
@@ -94,9 +106,18 @@ public class WeeklyFragment extends Fragment {
 
         showOnboardingIfNecessary();
 
+        statProgressBar.setVisibility(View.VISIBLE);
+        statStatus.setVisibility(View.VISIBLE);
+        weeklyStatsLayout.setVisibility(View.GONE);
+
         CoRecApiHelper.getInstance().getLocationWeeklyTrend().enqueue(new Callback<List<WeeklyTrendsModel>>() {
             @Override
             public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+
+                statProgressBar.setVisibility(View.GONE);
+                statStatus.setVisibility(View.GONE);
+                weeklyStatsLayout.setVisibility(View.VISIBLE);
+
                 if (response.code() == 200) {
                     weeklyTrendsModels = response.body();
 

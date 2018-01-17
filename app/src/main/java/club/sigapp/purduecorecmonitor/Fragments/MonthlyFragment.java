@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -45,6 +48,15 @@ public class MonthlyFragment extends Fragment {
     @BindView(R.id.stacked_Line_Chart)
     LineChart stackedLineChart;
 
+    @BindView(R.id.statProgressBar)
+    ProgressBar statProgressBar;
+
+    @BindView(R.id.statStatus)
+    TextView statStatus;
+
+    @BindView(R.id.monthlyChartLayout)
+    LinearLayout monthlyChartLayout;
+
     String locationId;
 
     public MonthlyFragment() {
@@ -71,9 +83,18 @@ public class MonthlyFragment extends Fragment {
 
         CoRecApi api = CoRecApiHelper.getInstance();
 
+        statProgressBar.setVisibility(View.VISIBLE);
+        statStatus.setVisibility(View.VISIBLE);
+        monthlyChartLayout.setVisibility(View.GONE);
+
         api.getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
             @Override
             public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
+                statProgressBar.setVisibility(View.GONE);
+                statStatus.setVisibility(View.GONE);
+                monthlyChartLayout.setVisibility(View.VISIBLE);
+
+
                 if (response.code() == 200) {
                     List<MonthlyTrendsModel> monthlyTrendsModel = response.body();
 

@@ -5,31 +5,59 @@
     android:background="@color/white"
     tools:context="club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="2">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/stacked_Line_Chart"
+            <ProgressBar
+                android:id="@+id/statProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/statStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/statProgressBar"
+                android:text="loading"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
+
+            <LinearLayout
+                android:id="@+id/monthlyChartLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0"
-            android:paddingTop="6dp"
-            android:text="@string/data_represents_attendance_versus_capacity"
-            android:textAlignment="center"
-            android:textColor="@color/dark_gray" />
-    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:layout_weight="1">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/stacked_Line_Chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0"
+                    android:paddingTop="6dp"
+                    android:text="@string/data_represents_attendance_versus_capacity"
+                    android:textAlignment="center"
+                    android:textColor="@color/dark_gray" />
+        </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>

@@ -3,7 +3,6 @@ package club.sigapp.purduecorecmonitor.Utils;
 import java.util.List;
 
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
-import retrofit2.Response;
 
 /**
  * Created by Slang on 1/23/2018.

@@ -132,6 +132,8 @@ public class WeeklyFragment extends Fragment {
                 @Override
                 public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
                     Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
+                    statProgressBar.setVisibility(View.GONE);
+                    statStatus.setVisibility(View.GONE);
                 }
             });
         }

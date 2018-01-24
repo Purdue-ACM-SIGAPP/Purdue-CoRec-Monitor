@@ -32,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.MonthlyTrendsModel;
-import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
@@ -58,6 +57,10 @@ public class MonthlyFragment extends Fragment {
     LinearLayout monthlyChartLayout;
 
     String locationId;
+    Float maxCapacity;
+
+    XAxis xAxis;
+    YAxis left;
 
     public MonthlyFragment() {
         // Required empty public constructor
@@ -87,6 +90,9 @@ public class MonthlyFragment extends Fragment {
         statStatus.setVisibility(View.VISIBLE);
         monthlyChartLayout.setVisibility(View.GONE);
 
+        xAxis = stackedLineChart.getXAxis();
+        left = stackedLineChart.getAxisLeft();
+
         api.getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
             @Override
             public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
@@ -101,6 +107,13 @@ public class MonthlyFragment extends Fragment {
                     for (Iterator<MonthlyTrendsModel> iterator = monthlyTrendsModel.iterator(); iterator.hasNext(); ) {
                         if (!iterator.next().LocationId.equals(locationId))
                             iterator.remove();
+                    }
+
+                    try {
+                        maxCapacity = (float) monthlyTrendsModel.get(0).Capacity;
+                        left.setAxisMaximum(maxCapacity);
+                    } catch (IndexOutOfBoundsException e) {
+                        left.setAxisMaximum(10.0f);
                     }
 
                     Collections.sort(monthlyTrendsModel, new MonthlyComparator());
@@ -119,6 +132,8 @@ public class MonthlyFragment extends Fragment {
                     maxCapacity.setDrawFilled(true);
                     maxCapacity.setFillColor(Color.BLACK);
                     maxCapacity.setFillAlpha(155);
+                    maxCapacity.setDrawValues(false);
+
                     LineDataSet currentCapacity = new LineDataSet(currentOccupancy, "Average Capacity");
                     currentCapacity.setValueFormatter(new IValueFormatter() {
                         @Override
@@ -148,8 +163,10 @@ public class MonthlyFragment extends Fragment {
 
             }
         });
-        XAxis xAxis = stackedLineChart.getXAxis();
-        xAxis.setLabelCount(13, true);
+
+        xAxis.setLabelCount(12, true);
+        xAxis.setAxisMinimum(1.0f);
+        xAxis.setAxisMaximum(12.0f);
         xAxis.setTextSize(11f);
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -166,7 +183,6 @@ public class MonthlyFragment extends Fragment {
         YAxis right = stackedLineChart.getAxisRight();
         right.setEnabled(false);
 
-        YAxis left = stackedLineChart.getAxisLeft();
         left.setLabelCount(10, false);
         left.setAxisMinimum(0.0f);
     }

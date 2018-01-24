@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Purdue CoRec Monitor</string>
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="data_represents_attendance_versus_capacity">Data represents average attendance versus capacity of the location</string>
 </resources>

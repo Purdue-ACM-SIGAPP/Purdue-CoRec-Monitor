@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        >
+
+        <ImageView
+            android:id="@+id/icons"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_floor_basement" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_and_star_layout"
+            android:layout_toRightOf="@+id/icons">
+
+            <TextView
+                android:id="@+id/card_main_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Title Here"
+                android:textColor="#000000"
+                android:textSize="28sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_weight="1"
+                />
+
+            <ImageButton
+                android:id="@+id/fav_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="?android:selectableItemBackground"
+                android:src="@drawable/ic_unfavorited_star"
+                android:layout_weight="0"
+                />
+
+        </LinearLayout>
+
+
+
+        <TextView
+            android:id="@+id/headcount"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_and_star_layout"
+            android:layout_toEndOf="@id/icons"
+            android:text="Headcount: 10"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

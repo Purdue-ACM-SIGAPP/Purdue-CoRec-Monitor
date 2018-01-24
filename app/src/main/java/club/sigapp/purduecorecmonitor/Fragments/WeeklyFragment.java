@@ -37,6 +37,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,6 +52,7 @@ import club.sigapp.purduecorecmonitor.Utils.BarGraphXAxisFormatter;
 import club.sigapp.purduecorecmonitor.Utils.LineGraphXAxisFormatter;
 import club.sigapp.purduecorecmonitor.Utils.Properties;
 import club.sigapp.purduecorecmonitor.Utils.SharedPrefsHelper;
+import club.sigapp.purduecorecmonitor.Utils.WeeklyStatsData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -110,39 +112,50 @@ public class WeeklyFragment extends Fragment {
         statStatus.setVisibility(View.VISIBLE);
         weeklyStatsLayout.setVisibility(View.GONE);
 
-        CoRecApiHelper.getInstance().getLocationWeeklyTrend().enqueue(new Callback<List<WeeklyTrendsModel>>() {
-            @Override
-            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
-
-                statProgressBar.setVisibility(View.GONE);
-                statStatus.setVisibility(View.GONE);
-                weeklyStatsLayout.setVisibility(View.VISIBLE);
-
-                if (response.code() == 200) {
-                    weeklyTrendsModels = response.body();
-
-                    for (Iterator<WeeklyTrendsModel> iterator = weeklyTrendsModels.iterator(); iterator.hasNext(); ) {
-                        if (!iterator.next().LocationId.equals(locationId))
-                            iterator.remove();
+        if (WeeklyStatsData.getInstance() != null) {
+            initializeWeeklyFragment(WeeklyStatsData.getInstance().getData());
+        } else {
+            CoRecApiHelper.getInstance().getLocationWeeklyTrend().enqueue(new Callback<List<WeeklyTrendsModel>>() {
+                @Override
+                public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                    if (response.code() == 200) {
+                        weeklyTrendsModels = response.body();
+                        WeeklyStatsData weeklyStatsData = new WeeklyStatsData();
+                        weeklyStatsData.setData(response.body());
+                        WeeklyStatsData.setInstance(weeklyStatsData);
+                        initializeWeeklyFragment(WeeklyStatsData.getInstance().getData());
+                    } else {
+                        Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                     }
-
-                    if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
-                        capacity = weeklyTrendsModels.get(0).Capacity;
-
-                    initializeBarChart();
-                    initializeLineChart();
-                } else {
-                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
-
-            }
-        });
-
+                @Override
+                public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+                    Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
         return view;
+    }
+
+    private void initializeWeeklyFragment(List<WeeklyTrendsModel> data){
+        weeklyTrendsModels = new ArrayList<>();
+
+        statProgressBar.setVisibility(View.GONE);
+        statStatus.setVisibility(View.GONE);
+        weeklyStatsLayout.setVisibility(View.VISIBLE);
+
+        for (Iterator<WeeklyTrendsModel> iterator = data.iterator(); iterator.hasNext(); ) {
+            WeeklyTrendsModel weekData = iterator.next();
+            if (weekData.LocationId.equals(locationId))
+                weeklyTrendsModels.add(weekData);
+        }
+
+        if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
+            capacity = weeklyTrendsModels.get(0).Capacity;
+
+        initializeBarChart();
+        initializeLineChart();
     }
 
     private void initializeBarChart() {

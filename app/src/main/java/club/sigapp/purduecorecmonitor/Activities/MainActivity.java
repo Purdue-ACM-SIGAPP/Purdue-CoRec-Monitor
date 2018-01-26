@@ -3,6 +3,7 @@ package club.sigapp.purduecorecmonitor.Activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,10 +25,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.mainRecyclerView)
     RecyclerView mainRecyclerView;
+
+    @BindView(R.id.swiperefresh)
+    SwipeRefreshLayout swiperefresh;
 
     @BindView(R.id.loadingBar)
     ProgressBar loadingBar;
@@ -46,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         callRetrofit();
+
+        swiperefresh.setOnRefreshListener(this);
     }
+
+
+
 
     private void callRetrofit() {
         status.setVisibility(View.VISIBLE);
@@ -84,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog failure = alertDialogBuilder.create();
                     failure.show();
                 }
-                startAdaptor(response.body());
+                startAdapter(response.body());
+
 
             }
 
@@ -108,16 +118,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startAdaptor(List<LocationsModel> data) {
-        coRecAdapter = new CoRecAdapter(this, data);
+    private void startAdapter(List<LocationsModel> data) {
+        if (coRecAdapter == null) {
+            coRecAdapter = new CoRecAdapter(this, data);
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            mainRecyclerView.setLayoutManager(linearLayoutManager);
+
+            mainRecyclerView.setAdapter(coRecAdapter);
+        }
+
         coRecAdapter.notifyDataSetChanged();
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mainRecyclerView.setLayoutManager(linearLayoutManager);
-
-        mainRecyclerView.setAdapter(coRecAdapter);
-
+        mainRecyclerView.setVisibility(View.VISIBLE);
     }
 
+    public void onRefresh(){
+        mainRecyclerView.setVisibility(View.INVISIBLE);
+        callRetrofit();
+        System.out.println("refreshing");
+        swiperefresh.setRefreshing(false);
+    }
 
 }

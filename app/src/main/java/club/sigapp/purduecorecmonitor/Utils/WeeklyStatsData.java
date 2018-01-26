@@ -4,9 +4,6 @@ import java.util.List;
 
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 
-/**
- * Created by Slang on 1/23/2018.
- */
 public class WeeklyStatsData {
 
     private static WeeklyStatsData weeklyStatsData = null;

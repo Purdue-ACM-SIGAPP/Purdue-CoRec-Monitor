@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.mainRecyclerView)
     RecyclerView mainRecyclerView;
@@ -55,15 +56,17 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
 
-
-
     private void callRetrofit() {
         status.setVisibility(View.VISIBLE);
-        status.setText("Loading...");
+        status.setText(R.string.loading);
         loadingBar.setVisibility(View.VISIBLE);
         CoRecApiHelper.getInstance().getAllLocations().enqueue(new Callback<List<LocationsModel>>() {
             @Override
             public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
+                if (response.body() == null || response.code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Unable to get data", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 status.setVisibility(View.GONE);
                 loadingBar.setVisibility(View.GONE);
                 boolean hasNonZero = false;
@@ -94,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     failure.show();
                 }
                 startAdapter(response.body());
-
-
             }
 
             @Override
@@ -133,10 +134,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mainRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    public void onRefresh(){
+    @Override
+    public void onRefresh() {
         mainRecyclerView.setVisibility(View.INVISIBLE);
         callRetrofit();
-        System.out.println("refreshing");
         swiperefresh.setRefreshing(false);
     }
 

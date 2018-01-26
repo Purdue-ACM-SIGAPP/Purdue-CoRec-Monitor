@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/statProgressBar"
-                android:text="loading"
+                android:text="@string/loading"
                 android:textSize="16sp"
                 android:visibility="gone"/>
 

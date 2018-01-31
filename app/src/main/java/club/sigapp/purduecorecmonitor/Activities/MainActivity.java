@@ -1,7 +1,10 @@
 package club.sigapp.purduecorecmonitor.Activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +22,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
@@ -139,6 +144,21 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mainRecyclerView.setVisibility(View.INVISIBLE);
         callRetrofit();
         swiperefresh.setRefreshing(false);
+    }
+
+    @OnClick(R.id.fit_button)
+    public void onClickFit(){
+        PackageManager manager = context.getPackageManager();
+        try {
+            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
+            if (i == null) {
+                throw new ActivityNotFoundException();
+            }
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
+        }
     }
 
 }

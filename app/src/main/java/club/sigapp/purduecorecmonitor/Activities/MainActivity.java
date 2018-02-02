@@ -159,7 +159,7 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
 
-        final MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        final MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -167,12 +167,13 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
                 coRecAdapter.searchLocations(query);
                 View view = getCurrentFocus();
                 if (view != null) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     searchView.clearFocus();
                 }
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 coRecAdapter.searchLocations(s);
@@ -180,9 +181,10 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
             }
         });
         return true;
+    }
 
     @OnClick(R.id.fit_button)
-    public void onClickFit(){
+    public void onClickFit() {
         PackageManager manager = context.getPackageManager();
         try {
             Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");

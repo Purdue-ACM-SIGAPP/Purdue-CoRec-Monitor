@@ -43,6 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
@@ -85,6 +86,9 @@ public class WeeklyFragment extends Fragment {
 
     @BindView(R.id.weeklyStatsLayout)
     LinearLayout weeklyStatsLayout;
+
+    @BindView(R.id.hourlyText)
+    TextView hourlyText;
 
     List<WeeklyTrendsModel> weeklyTrendsModels;
 
@@ -131,7 +135,7 @@ public class WeeklyFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.another_internet_error_message, Toast.LENGTH_LONG).show();
                     statProgressBar.setVisibility(View.GONE);
                     statStatus.setVisibility(View.GONE);
                 }
@@ -157,6 +161,8 @@ public class WeeklyFragment extends Fragment {
             capacity = weeklyTrendsModels.get(0).Capacity;
 
         initializeBarChart();
+        lineChart.setVisibility(View.INVISIBLE);
+        hourlyText.setVisibility(View.INVISIBLE);
         initializeLineChart();
     }
 
@@ -206,6 +212,8 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Log.d("Weekly", Properties.getDaysOfWeek()[(int) e.getX()]);
+                lineChart.setVisibility(View.VISIBLE);
+                hourlyText.setVisibility(View.VISIBLE);
                 updateLineChart((int) e.getX());
             }
 
@@ -331,6 +339,8 @@ public class WeeklyFragment extends Fragment {
         }
         lineChart.animateXY(1000, 1000);
         lineChart.invalidate();
+
+        AnalyticsHelper.sendEventHit("Day of Week Clicked", AnalyticsHelper.CLICK, Integer.toString(day));
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {
@@ -368,7 +378,7 @@ public class WeeklyFragment extends Fragment {
             //show onboarding snackbar.
             mOnboardingSnackbar = Snackbar
                     .make(lineChart,
-                            "Tap a day of the week in the bar graph to view hourly statistics.",
+                            R.string.tutorial_text,
                             Snackbar.LENGTH_INDEFINITE)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         /**
@@ -389,7 +399,7 @@ public class WeeklyFragment extends Fragment {
                             }
                         }
                     })
-                    .setAction("Don't show\nagain", new View.OnClickListener() {
+                    .setAction(R.string.dismiss, new View.OnClickListener() {
 
                         /**
                          * If the user dismisses the snackbar, we should respect their

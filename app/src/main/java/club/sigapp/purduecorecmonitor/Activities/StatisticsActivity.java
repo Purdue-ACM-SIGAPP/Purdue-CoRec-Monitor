@@ -11,11 +11,12 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Adapters.StatisticPagerAdapter;
+import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
 import club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment;
 import club.sigapp.purduecorecmonitor.Fragments.WeeklyFragment;
 import club.sigapp.purduecorecmonitor.R;
 
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends ScreenTrackedActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -40,6 +41,7 @@ public class StatisticsActivity extends AppCompatActivity {
         initToolbar();
         setupTabLayout();
 
+        setScreenName("Statistics Activity");
     }
 
     private void initToolbar() {
@@ -61,8 +63,8 @@ public class StatisticsActivity extends AppCompatActivity {
     private void setupTabLayout() {
         pagerAdapter = new StatisticPagerAdapter
                 (getSupportFragmentManager());
-        pagerAdapter.addFragment(new WeeklyFragment(), "Weekly", false);
-        pagerAdapter.addFragment(new MonthlyFragment(), "Monthly", false);
+        pagerAdapter.addFragment(new WeeklyFragment(), getResources().getText(R.string.weekly_title).toString(), false);
+        pagerAdapter.addFragment(new MonthlyFragment(), getResources().getText(R.string.monthly_title).toString(), false);
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }

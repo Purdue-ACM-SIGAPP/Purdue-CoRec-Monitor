@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.Location;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.Favorites;
@@ -182,6 +183,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         @OnClick(R.id.card_main)
         public void onClickCard() {
             String locationId = filteredLocations.get(this.getLayoutPosition()).Location.LocationId;
+            AnalyticsHelper.sendEventHit("Location Clicked", AnalyticsHelper.CLICK, locations.get(this.getLayoutPosition()).LocationName);
             Intent intent = new Intent(context, StatisticsActivity.class);
             intent.putExtra("LocationId", locationId);
             intent.putExtra("CorecRoom", filteredLocations.get(this.getLayoutPosition()).LocationName);

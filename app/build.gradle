@@ -35,6 +35,8 @@ dependencies {
 
     implementation 'com.android.support:support-v4:27.0.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    implementation 'com.google.android.gms:play-services-analytics:11.8.0'
     //Charting
     // compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     //Additional dependencies

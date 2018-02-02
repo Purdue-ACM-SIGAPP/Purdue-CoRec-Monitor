@@ -1,7 +1,10 @@
 package club.sigapp.purduecorecmonitor.Activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +27,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
+import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
@@ -31,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.mainRecyclerView)
     RecyclerView mainRecyclerView;
@@ -57,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         setSupportActionBar(toolbar);
         callRetrofit();
 
+        AnalyticsHelper.initDefaultTracker(this.getApplication());
+        setScreenName("Main List");
+
         swiperefresh.setOnRefreshListener(this);
     }
 
@@ -69,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
                 if (response.body() == null || response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "Unable to get data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.main_loading_fail, Toast.LENGTH_LONG).show();
                     return;
                 }
                 status.setVisibility(View.GONE);
@@ -83,16 +93,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }
                 if (!hasNonZero) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                            .setTitle("CoRec Website Error")
-                            .setMessage("It appears that the CoRec website returned all locations as" +
-                                    " having no people. This probably means the CoRec is closed, or the website is down.")
+                            .setTitle(R.string.corec_website_failure_title)
+                            .setMessage(R.string.corec_website_failure)
                             .setCancelable(false)
-                            .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     callRetrofit();
                                 }
-                            }).setNegativeButton("Okay", new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(R.string.okay, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
@@ -109,10 +118,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 status.setVisibility(View.GONE);
                 loadingBar.setVisibility(View.GONE);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                        .setTitle("Data retrieval failed")
-                        .setMessage("Unable to connect to the Internet")
+                        .setTitle(R.string.internet_error_title)
+                        .setMessage(R.string.internet_error_message)
                         .setCancelable(false)
-                        .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 callRetrofit();
@@ -171,6 +180,19 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         });
         return true;
-    }
 
+    @OnClick(R.id.fit_button)
+    public void onClickFit(){
+        PackageManager manager = context.getPackageManager();
+        try {
+            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
+            if (i == null) {
+                throw new ActivityNotFoundException();
+            }
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
+        }
+    }
 }

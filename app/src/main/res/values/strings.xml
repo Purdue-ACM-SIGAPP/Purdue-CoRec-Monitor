@@ -1,10 +1,22 @@
 <resources>
-    <string name="app_name">Purdue CoRec</string>
+    <string name="app_name" translatable="false">Purdue CoRec</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="data_represents_attendance_versus_capacity">Data represents average attendance versus capacity of the location</string>
     <string name="loading">Loading…</string>
     <string name="search">Search</string>
+    <string name="main_loading_fail">"Unable to get data"</string>
+    <string name="corec_website_failure_title">"CoRec Website Error"</string>
+    <string name="corec_website_failure">It appears that the CoRec website returned all locations as having no people. This probably means the CoRec is closed, or the website is down.</string>
+    <string name="internet_error_title">Data retrieval failed</string>
+    <string name="internet_error_message">Unable to connect to the Internet</string>
+    <string name="another_internet_error_message">Error getting data</string>
+    <string name="retry">Retry</string>
+    <string name="okay">Okay</string>
+    <string name="tutorial_text">Tap a day of the week in the bar graph to view hourly statistics.</string>
+    <string name="weekly_title">Weekly</string>
+    <string name="monthly_title">Monthly</string>
+    <string name="dismiss">Don\'t show\nagain</string>
+    <string name="weekly_statistics">Weekly Statistics: </string>
+    <string name="hourly_statistics">Hourly Statistics: </string>
 </resources>

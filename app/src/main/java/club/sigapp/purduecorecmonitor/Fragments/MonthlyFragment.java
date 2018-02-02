@@ -106,7 +106,7 @@ public class MonthlyFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<List<MonthlyTrendsModel>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.another_internet_error_message, Toast.LENGTH_LONG).show();
                     statProgressBar.setVisibility(View.GONE);
                     statStatus.setVisibility(View.GONE);
                 }

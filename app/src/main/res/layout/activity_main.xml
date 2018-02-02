@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/loadingBar"
                     android:layout_centerHorizontal="true"
-                    android:text="Loading..."
+                    android:text="@string/loading"
                     android:textSize="16sp" />
 
                 <android.support.v7.widget.RecyclerView

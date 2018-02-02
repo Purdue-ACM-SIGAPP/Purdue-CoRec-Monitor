@@ -19,6 +19,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
+import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
@@ -26,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.mainRecyclerView)
     RecyclerView mainRecyclerView;
@@ -51,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         callRetrofit();
+
+        AnalyticsHelper.initDefaultTracker(this.getApplication());
+        setScreenName("Main List");
 
         swiperefresh.setOnRefreshListener(this);
     }

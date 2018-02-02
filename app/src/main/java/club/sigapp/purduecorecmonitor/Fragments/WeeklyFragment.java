@@ -43,6 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
@@ -338,6 +339,8 @@ public class WeeklyFragment extends Fragment {
         }
         lineChart.animateXY(1000, 1000);
         lineChart.invalidate();
+
+        AnalyticsHelper.sendEventHit("Day of Week Clicked", AnalyticsHelper.CLICK, Integer.toString(day));
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {

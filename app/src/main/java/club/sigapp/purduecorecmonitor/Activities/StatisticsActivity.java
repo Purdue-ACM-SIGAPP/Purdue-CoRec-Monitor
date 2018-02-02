@@ -11,11 +11,12 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Adapters.StatisticPagerAdapter;
+import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
 import club.sigapp.purduecorecmonitor.Fragments.MonthlyFragment;
 import club.sigapp.purduecorecmonitor.Fragments.WeeklyFragment;
 import club.sigapp.purduecorecmonitor.R;
 
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends ScreenTrackedActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -40,6 +41,7 @@ public class StatisticsActivity extends AppCompatActivity {
         initToolbar();
         setupTabLayout();
 
+        setScreenName("Statistics Activity");
     }
 
     private void initToolbar() {

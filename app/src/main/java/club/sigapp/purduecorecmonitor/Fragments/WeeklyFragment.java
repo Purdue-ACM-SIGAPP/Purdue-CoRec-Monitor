@@ -86,6 +86,9 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.weeklyStatsLayout)
     LinearLayout weeklyStatsLayout;
 
+    @BindView(R.id.hourlyText)
+    TextView hourlyText;
+
     List<WeeklyTrendsModel> weeklyTrendsModels;
 
     private int capacity = 0;
@@ -157,6 +160,8 @@ public class WeeklyFragment extends Fragment {
             capacity = weeklyTrendsModels.get(0).Capacity;
 
         initializeBarChart();
+        lineChart.setVisibility(View.INVISIBLE);
+        hourlyText.setVisibility(View.INVISIBLE);
         initializeLineChart();
     }
 
@@ -206,6 +211,8 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Log.d("Weekly", Properties.getDaysOfWeek()[(int) e.getX()]);
+                lineChart.setVisibility(View.VISIBLE);
+                hourlyText.setVisibility(View.VISIBLE);
                 updateLineChart((int) e.getX());
             }
 

@@ -6,11 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.view.PagerTitleStrip;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -28,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
+import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
@@ -39,9 +39,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshLayout.OnRefreshListener {
+    @BindView(R.id.sliding_tabs)
+    PagerTitleStrip tabs;
 
-    @BindView(R.id.mainRecyclerView)
-    RecyclerView mainRecyclerView;
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
 
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout swiperefresh;
@@ -52,7 +54,6 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     @BindView(R.id.status)
     TextView status;
 
-    private CoRecAdapter coRecAdapter;
     final private Context context = this;
 
     @Override
@@ -133,19 +134,10 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         });
     }
 
-    private void startAdapter(List<LocationsModel> data) {
-        if (coRecAdapter == null) {
-            coRecAdapter = new CoRecAdapter(this, data);
-
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-            mainRecyclerView.setLayoutManager(linearLayoutManager);
-
-            mainRecyclerView.setAdapter(coRecAdapter);
-        }
-
-        coRecAdapter.notifyDataSetChanged();
-
-        mainRecyclerView.setVisibility(View.VISIBLE);
+    private void startAdaptor(List<LocationsModel> data) {
+	    FloorTabAdapter floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), data);
+	    viewPager.setAdapter(floorTabAdapter);
+//	    tabs.setupWithViewPager(viewPager);
     }
 
     @Override

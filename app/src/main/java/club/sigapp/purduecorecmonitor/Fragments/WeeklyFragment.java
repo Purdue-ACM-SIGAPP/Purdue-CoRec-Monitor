@@ -131,7 +131,7 @@ public class WeeklyFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.another_internet_error_message, Toast.LENGTH_LONG).show();
                     statProgressBar.setVisibility(View.GONE);
                     statStatus.setVisibility(View.GONE);
                 }
@@ -368,7 +368,7 @@ public class WeeklyFragment extends Fragment {
             //show onboarding snackbar.
             mOnboardingSnackbar = Snackbar
                     .make(lineChart,
-                            "Tap a day of the week in the bar graph to view hourly statistics.",
+                            R.string.tutorial_text,
                             Snackbar.LENGTH_INDEFINITE)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         /**
@@ -389,7 +389,7 @@ public class WeeklyFragment extends Fragment {
                             }
                         }
                     })
-                    .setAction("Don't show\nagain", new View.OnClickListener() {
+                    .setAction(R.string.dismiss, new View.OnClickListener() {
 
                         /**
                          * If the user dismisses the snackbar, we should respect their

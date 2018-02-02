@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
                 if (response.body() == null || response.code() != 200) {
-                    Toast.makeText(getApplicationContext(), "Unable to get data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.main_loading_fail, Toast.LENGTH_LONG).show();
                     return;
                 }
                 status.setVisibility(View.GONE);
@@ -78,16 +78,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }
                 if (!hasNonZero) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                            .setTitle("CoRec Website Error")
-                            .setMessage("It appears that the CoRec website returned all locations as" +
-                                    " having no people. This probably means the CoRec is closed, or the website is down.")
+                            .setTitle(R.string.corec_website_failure_title)
+                            .setMessage(R.string.corec_website_failure)
                             .setCancelable(false)
-                            .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     callRetrofit();
                                 }
-                            }).setNegativeButton("Okay", new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(R.string.okay, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
@@ -104,10 +103,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 status.setVisibility(View.GONE);
                 loadingBar.setVisibility(View.GONE);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                        .setTitle("Data retrieval failed")
-                        .setMessage("Unable to connect to the Internet")
+                        .setTitle(R.string.internet_error_title)
+                        .setMessage(R.string.internet_error_message)
                         .setCancelable(false)
-                        .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 callRetrofit();

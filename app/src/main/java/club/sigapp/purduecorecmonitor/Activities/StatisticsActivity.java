@@ -61,8 +61,8 @@ public class StatisticsActivity extends AppCompatActivity {
     private void setupTabLayout() {
         pagerAdapter = new StatisticPagerAdapter
                 (getSupportFragmentManager());
-        pagerAdapter.addFragment(new WeeklyFragment(), "Weekly", false);
-        pagerAdapter.addFragment(new MonthlyFragment(), "Monthly", false);
+        pagerAdapter.addFragment(new WeeklyFragment(), getResources().getText(R.string.weekly_title).toString(), false);
+        pagerAdapter.addFragment(new MonthlyFragment(), getResources().getText(R.string.monthly_title).toString(), false);
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }

@@ -4,6 +4,7 @@
 
     <string name="data_represents_attendance_versus_capacity">Data represents average attendance versus capacity of the location</string>
     <string name="loading">Loading…</string>
+    <string name="search">Search</string>
     <string name="main_loading_fail">"Unable to get data"</string>
     <string name="corec_website_failure_title">"CoRec Website Error"</string>
     <string name="corec_website_failure">It appears that the CoRec website returned all locations as having no people. This probably means the CoRec is closed, or the website is down.</string>

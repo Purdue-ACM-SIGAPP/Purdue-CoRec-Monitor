@@ -12,7 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -150,8 +155,36 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         swiperefresh.setRefreshing(false);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        final MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                coRecAdapter.searchLocations(query);
+                View view = getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    searchView.clearFocus();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                coRecAdapter.searchLocations(s);
+                return true;
+            }
+        });
+        return true;
+    }
+
     @OnClick(R.id.fit_button)
-    public void onClickFit(){
+    public void onClickFit() {
         PackageManager manager = context.getPackageManager();
         try {
             Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
@@ -164,5 +197,4 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
             Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
         }
     }
-
 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
+import club.sigapp.purduecorecmonitor.Models.Location;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
@@ -30,11 +32,13 @@ import club.sigapp.purduecorecmonitor.Utils.Favorites;
 public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHolder> {
 
     private List<LocationsModel> locations;
+    private List<LocationsModel> filteredLocations;
     private String[] favorites;
     private Context context;
 
     public CoRecAdapter(Context context, List<LocationsModel> data) {
         this.locations = data;
+        this.filteredLocations = this.locations;
         if (Favorites.getFavorites(context) != null) {
             this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
         }
@@ -47,28 +51,44 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         if (Favorites.getFavorites(context) != null) {
             this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
         }
-        Collections.sort(locations);
+        Collections.sort(filteredLocations);
 
         int count = 0;
         //iterate through all locations that have been favorited
         if (favorites != null) {
             for (String s : favorites) {
                 //iterate through all locations to search for favorited location
-                for (int i = count; i < locations.size(); i++) {
-                    if (s.equals(locations.get(i).LocationId)) {
+                for (int i = count; i < filteredLocations.size(); i++) {
+                    if (s.equals(filteredLocations.get(i).LocationId)) {
                     /*move this location to index count and shift all others between count index
                     and i down one to make room at top
                      */
-                        LocationsModel temp = locations.get(i);
+                        LocationsModel temp = filteredLocations.get(i);
                         for (int index = i; index > count; index--) {
                             //shift location to the right
-                            locations.set(index, locations.get(index - 1));
+                            filteredLocations.set(index, filteredLocations.get(index - 1));
                         }
-                        locations.set(count++, temp);
+                        filteredLocations.set(count++, temp);
                     }
                 }
             }
         }
+    }
+
+    public void searchLocations(String s) {
+        if (s.length() != 0) {
+            filteredLocations = new ArrayList<>();
+            for (LocationsModel location : locations) {
+                if (location.LocationName.toLowerCase().contains(s.toLowerCase())) {
+                    filteredLocations.add(location);
+                }
+            }
+        }
+        else {
+            filteredLocations = locations;
+        }
+        reorderList();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -80,11 +100,11 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
     @Override
     public void onBindViewHolder(AreaViewHolder holder, int position) {
-        holder.cardTitle.setText(locations.get(position).LocationName);
-        String headString = "Headcount: " + locations.get(position).Count + " / Max: " + locations.get(position).Capacity;
+        holder.cardTitle.setText(filteredLocations.get(position).LocationName);
+        String headString = "Headcount: " + filteredLocations.get(position).Count + " / Max: " + filteredLocations.get(position).Capacity;
         holder.headCount.setText(headString);
 
-        switch(locations.get(position).Location.Zone.ZoneName){
+        switch(filteredLocations.get(position).Location.Zone.ZoneName){
             case "CoRec Basement":
                 Picasso.with(context).load(R.drawable.ic_floor_basement).fit().into(holder.icon);
                 break;
@@ -120,7 +140,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         if (favorites != null) {
             for (String favorite : favorites) {
-                if (locations.get(position).LocationId.equals(favorite)) {
+                if (filteredLocations.get(position).LocationId.equals(favorite)) {
                     holder.favButton.setImageResource(R.drawable.ic_favorited_star);
                     favorited = true;
                 }
@@ -134,7 +154,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
     @Override
     public int getItemCount() {
-        return locations.size();
+        return filteredLocations.size();
     }
 
 
@@ -162,13 +182,11 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @OnClick(R.id.card_main)
         public void onClickCard() {
-            String locationId = locations.get(this.getLayoutPosition()).Location.LocationId;
-
+            String locationId = filteredLocations.get(this.getLayoutPosition()).Location.LocationId;
             AnalyticsHelper.sendEventHit("Location Clicked", AnalyticsHelper.CLICK, locations.get(this.getLayoutPosition()).LocationName);
-
             Intent intent = new Intent(context, StatisticsActivity.class);
             intent.putExtra("LocationId", locationId);
-            intent.putExtra("CorecRoom", locations.get(this.getLayoutPosition()).LocationName);
+            intent.putExtra("CorecRoom", filteredLocations.get(this.getLayoutPosition()).LocationName);
             context.startActivity(intent);
         }
 
@@ -176,7 +194,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         public void onClickFav() {
             Set<String> favorites = Favorites.getFavorites(context);
 
-            String locationId = locations.get(this.getLayoutPosition()).LocationId;
+            String locationId = filteredLocations.get(this.getLayoutPosition()).LocationId;
 
             if (favorites != null && favorites.contains(locationId)) {
                 //Item was already favorited, so change it to the unfavorited star and remove from favorites

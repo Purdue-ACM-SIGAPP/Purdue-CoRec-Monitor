@@ -19,21 +19,21 @@ import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
 
-public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FloorFragment extends Fragment {
 	private List<LocationsModel> models;
 
 	@BindView(R.id.recycler_view)
 	RecyclerView recyclerView;
+	private CoRecAdapter coRecAdapter;
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 	                         @Nullable Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_floor, container);
-		if (v.getParent() != null) ((ViewGroup) v.getParent()).removeAllViews();
+		View v = inflater.inflate(R.layout.fragment_floor, container, false);
 		ButterKnife.bind(this, v);
 
-		CoRecAdapter coRecAdapter = new CoRecAdapter(getContext(), models);
+		coRecAdapter = new CoRecAdapter(getContext(), models);
 		coRecAdapter.notifyDataSetChanged();
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 		recyclerView.setLayoutManager(linearLayoutManager);
@@ -42,13 +42,9 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 		return v;
 	}
 
-	@Override
-	public void onRefresh() {
-
-	}
-
-	public List<LocationsModel> getModels() {
-		return models;
+	public void searchLocations(String s) {
+		if (coRecAdapter == null) return;
+		coRecAdapter.searchLocations(s);
 	}
 
 	public void setModels(List<LocationsModel> models) {

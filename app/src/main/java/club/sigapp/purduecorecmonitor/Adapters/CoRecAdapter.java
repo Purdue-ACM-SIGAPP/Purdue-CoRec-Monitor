@@ -35,10 +35,6 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     private String[] favorites;
     private Context context;
 
-    public enum Floor {
-        FAVORITES, BASEMENT, L1, L2, L3, L4, TREC, COMP_POOL, DIVE_POOL, REC_POOL
-    }
-
     public CoRecAdapter(Context context, List<LocationsModel> data) {
         this.locations = data;
         this.filteredLocations = this.locations;

@@ -43,9 +43,6 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     @BindView(R.id.sliding_tabs)
     TabLayout tabLayout;
 
-//    @BindView(R.id.swiperefresh)
-//    SwipeRefreshLayout swiperefresh;
-
     @BindView(R.id.loadingBar)
     ProgressBar loadingBar;
 
@@ -54,7 +51,6 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
 
     final private Context context = this;
     private FloorTabAdapter floorTabAdapter;
-    private CoRecAdapter coRecAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +63,6 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
 
         AnalyticsHelper.initDefaultTracker(this.getApplication());
         setScreenName("Main List");
-
-        viewPager.setAdapter(floorTabAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-//        swiperefresh.setOnRefreshListener(this);
     }
 
 
@@ -138,7 +129,7 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     }
 
     private void startAdapter(List<LocationsModel> data) {
-	    FloorTabAdapter floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), data);
+        floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), data);
 	    viewPager.setAdapter(floorTabAdapter);
 	    tabLayout.setupWithViewPager(viewPager);
     }
@@ -146,7 +137,6 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     @Override
     public void onRefresh() {
         callRetrofit();
-//        swiperefresh.setRefreshing(false);
     }
 
     @Override
@@ -158,7 +148,7 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                coRecAdapter.searchLocations(query);
+                floorTabAdapter.searchLocations(query);
                 View view = getCurrentFocus();
                 if (view != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -170,25 +160,25 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
 
             @Override
             public boolean onQueryTextChange(String s) {
-                coRecAdapter.searchLocations(s);
+                floorTabAdapter.searchLocations(s);
                 return true;
             }
         });
         return true;
     }
 
-//    @OnClick(R.id.fit_button)
-//    public void onClickFit() {
-//        PackageManager manager = context.getPackageManager();
-//        try {
-//            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
-//            if (i == null) {
-//                throw new ActivityNotFoundException();
-//            }
-//            i.addCategory(Intent.CATEGORY_LAUNCHER);
-//            context.startActivity(i);
-//        } catch (ActivityNotFoundException e) {
-//            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
-//        }
-//    }
+    @OnClick(R.id.fit_button)
+    public void onClickFit() {
+        PackageManager manager = context.getPackageManager();
+        try {
+            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
+            if (i == null) {
+                throw new ActivityNotFoundException();
+            }
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
+        }
+    }
 }

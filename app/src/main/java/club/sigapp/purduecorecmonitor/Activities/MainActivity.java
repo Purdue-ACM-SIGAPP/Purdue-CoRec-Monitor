@@ -6,19 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.view.PagerTitleStrip;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
@@ -39,14 +37,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshLayout.OnRefreshListener {
-    @BindView(R.id.sliding_tabs)
-    PagerTitleStrip tabs;
-
     @BindView(R.id.viewpager)
     ViewPager viewPager;
 
-    @BindView(R.id.swiperefresh)
-    SwipeRefreshLayout swiperefresh;
+    @BindView(R.id.sliding_tabs)
+    TabLayout tabLayout;
+
+//    @BindView(R.id.swiperefresh)
+//    SwipeRefreshLayout swiperefresh;
 
     @BindView(R.id.loadingBar)
     ProgressBar loadingBar;
@@ -55,6 +53,8 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     TextView status;
 
     final private Context context = this;
+    private FloorTabAdapter floorTabAdapter;
+    private CoRecAdapter coRecAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,10 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         AnalyticsHelper.initDefaultTracker(this.getApplication());
         setScreenName("Main List");
 
-        swiperefresh.setOnRefreshListener(this);
+        viewPager.setAdapter(floorTabAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+//        swiperefresh.setOnRefreshListener(this);
     }
 
 
@@ -134,17 +137,16 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         });
     }
 
-    private void startAdaptor(List<LocationsModel> data) {
+    private void startAdapter(List<LocationsModel> data) {
 	    FloorTabAdapter floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), data);
 	    viewPager.setAdapter(floorTabAdapter);
-//	    tabs.setupWithViewPager(viewPager);
+	    tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onRefresh() {
-        mainRecyclerView.setVisibility(View.INVISIBLE);
         callRetrofit();
-        swiperefresh.setRefreshing(false);
+//        swiperefresh.setRefreshing(false);
     }
 
     @Override
@@ -175,18 +177,18 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         return true;
     }
 
-    @OnClick(R.id.fit_button)
-    public void onClickFit() {
-        PackageManager manager = context.getPackageManager();
-        try {
-            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
-            if (i == null) {
-                throw new ActivityNotFoundException();
-            }
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-            context.startActivity(i);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
-        }
-    }
+//    @OnClick(R.id.fit_button)
+//    public void onClickFit() {
+//        PackageManager manager = context.getPackageManager();
+//        try {
+//            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
+//            if (i == null) {
+//                throw new ActivityNotFoundException();
+//            }
+//            i.addCategory(Intent.CATEGORY_LAUNCHER);
+//            context.startActivity(i);
+//        } catch (ActivityNotFoundException e) {
+//            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
+//        }
+//    }
 }

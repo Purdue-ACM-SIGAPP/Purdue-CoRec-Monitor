@@ -16,17 +16,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
+import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
 
-public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FloorFragment extends Fragment {
     private List<LocationsModel> models;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
 
     private CoRecAdapter coRecAdapter;
 
@@ -53,12 +51,5 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void setModels(List<LocationsModel> models) {
         this.models = models;
-    }
-
-    @Override
-    public void onRefresh() {
-        recyclerView.setVisibility(View.INVISIBLE);
-        swipeRefreshLayout.setRefreshing(false);
-        // TODO: Refresh
     }
 }

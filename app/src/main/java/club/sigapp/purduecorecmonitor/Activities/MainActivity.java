@@ -130,8 +130,8 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
 
     private void startAdapter(List<LocationsModel> data) {
         floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), data);
-	    viewPager.setAdapter(floorTabAdapter);
-	    tabLayout.setupWithViewPager(viewPager);
+        viewPager.setAdapter(floorTabAdapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

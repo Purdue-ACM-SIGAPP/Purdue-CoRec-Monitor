@@ -19,35 +19,46 @@ import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
 
-public class FloorFragment extends Fragment {
-	private List<LocationsModel> models;
+public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private List<LocationsModel> models;
 
-	@BindView(R.id.recycler_view)
-	RecyclerView recyclerView;
-	private CoRecAdapter coRecAdapter;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
 
-	@Nullable
-	@Override
-	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-	                         @Nullable Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_floor, container, false);
-		ButterKnife.bind(this, v);
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
-		coRecAdapter = new CoRecAdapter(getContext(), models);
-		coRecAdapter.notifyDataSetChanged();
-		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-		recyclerView.setLayoutManager(linearLayoutManager);
-		recyclerView.setAdapter(coRecAdapter);
+    private CoRecAdapter coRecAdapter;
 
-		return v;
-	}
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_floor, container, false);
+        ButterKnife.bind(this, v);
 
-	public void searchLocations(String s) {
-		if (coRecAdapter == null) return;
-		coRecAdapter.searchLocations(s);
-	}
+        coRecAdapter = new CoRecAdapter(getContext(), models);
+        coRecAdapter.notifyDataSetChanged();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(coRecAdapter);
 
-	public void setModels(List<LocationsModel> models) {
-		this.models = models;
-	}
+        return v;
+    }
+
+    public void searchLocations(String s) {
+        if (coRecAdapter == null) return;
+        coRecAdapter.searchLocations(s);
+    }
+
+    public void setModels(List<LocationsModel> models) {
+        this.models = models;
+    }
+
+    @Override
+    public void onRefresh() {
+        recyclerView.setVisibility(View.INVISIBLE);
+        swipeRefreshLayout.setRefreshing(false);
+        // TODO: Refresh
+    }
 }

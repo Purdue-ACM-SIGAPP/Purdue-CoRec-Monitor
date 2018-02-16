@@ -1,5 +1,6 @@
 package club.sigapp.purduecorecmonitor.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,8 +24,6 @@ import club.sigapp.purduecorecmonitor.R;
 import static club.sigapp.purduecorecmonitor.Activities.MainActivity.floorTabAdapter;
 
 public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private List<LocationsModel> models;
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -40,8 +39,6 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         View v = inflater.inflate(R.layout.fragment_floor, container, false);
         ButterKnife.bind(this, v);
 
-        coRecAdapter = new CoRecAdapter(getContext(), models);
-        coRecAdapter.notifyDataSetChanged();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(coRecAdapter);
@@ -52,12 +49,12 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void searchLocations(String s) {
-        if (coRecAdapter == null) return;
         coRecAdapter.searchLocations(s);
     }
 
-    public void setModels(List<LocationsModel> models) {
-        this.models = models;
+    public void setModels(List<LocationsModel> models, Context c) {
+        coRecAdapter = new CoRecAdapter(c, models);
+        coRecAdapter.notifyDataSetChanged();
     }
 
     @Override

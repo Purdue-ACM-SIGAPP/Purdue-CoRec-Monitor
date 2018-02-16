@@ -63,7 +63,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		});
 		for (String s : locations) {
 			FloorFragment fragment = new FloorFragment();
-			fragment.setModels(partitionedData.get(s));
+			fragment.setModels(partitionedData.get(s), context);
 			fragments.add(fragment);
 		}
 		notifyDataSetChanged();

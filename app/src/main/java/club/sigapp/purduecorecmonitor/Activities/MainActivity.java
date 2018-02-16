@@ -35,10 +35,10 @@ public class MainActivity extends ScreenTrackedActivity {
     TabLayout tabLayout;
 
     @BindView(R.id.loadingBar)
-    ProgressBar loadingBar;
+    public ProgressBar loadingBar;
 
     @BindView(R.id.status)
-    TextView status;
+    public TextView status;
 
     final private Context context = this;
     public static FloorTabAdapter floorTabAdapter;
@@ -50,6 +50,9 @@ public class MainActivity extends ScreenTrackedActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        loadingBar.setVisibility(View.VISIBLE);
+        status.setVisibility(View.VISIBLE);
 
         floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(floorTabAdapter);

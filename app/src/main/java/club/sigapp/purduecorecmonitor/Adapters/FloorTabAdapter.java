@@ -74,6 +74,9 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		CoRecApiHelper.getInstance().getAllLocations().enqueue(new Callback<List<LocationsModel>>() {
 			@Override
 			public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
+				context.loadingBar.setVisibility(View.GONE);
+				context.status.setVisibility(View.GONE);
+
 				if (response.body() == null || response.code() != 200) {
 					Toast.makeText(context, R.string.main_loading_fail, Toast.LENGTH_LONG).show();
 					return;
@@ -112,6 +115,9 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 
 			@Override
 			public void onFailure(Call<List<LocationsModel>> call, Throwable t) {
+				context.loadingBar.setVisibility(View.GONE);
+				context.status.setVisibility(View.GONE);
+
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
 						.setTitle(R.string.internet_error_title)
 						.setMessage(R.string.internet_error_message)

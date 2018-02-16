@@ -21,12 +21,13 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
 import club.sigapp.purduecorecmonitor.R;
 
-public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends ScreenTrackedActivity {
     @BindView(R.id.viewpager)
     ViewPager viewPager;
 
@@ -39,11 +40,8 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
     @BindView(R.id.status)
     TextView status;
 
-    @BindView(R.id.swipeRefreshLayout)
-    public SwipeRefreshLayout swipeRefreshLayout;
-
     final private Context context = this;
-    private FloorTabAdapter floorTabAdapter;
+    public static FloorTabAdapter floorTabAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +102,4 @@ public class MainActivity extends ScreenTrackedActivity implements SwipeRefreshL
         }
     }
 
-    @Override
-    public void onRefresh() {
-        swipeRefreshLayout.setRefreshing(true);
-        floorTabAdapter.callRetrofit();
-    }
 }

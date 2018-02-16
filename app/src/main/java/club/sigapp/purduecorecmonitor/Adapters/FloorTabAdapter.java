@@ -66,7 +66,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 			fragments.add(fragment);
 		}
 		notifyDataSetChanged();
-		context.swipeRefreshLayout.setRefreshing(false);
+		//context.swipeRefreshLayout.setRefreshing(false);
 	}
 
 	public void callRetrofit() {

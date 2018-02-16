@@ -20,11 +20,16 @@ import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
 
-public class FloorFragment extends Fragment {
+import static club.sigapp.purduecorecmonitor.Activities.MainActivity.floorTabAdapter;
+
+public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private List<LocationsModel> models;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+
+    @BindView(R.id.swipeRefreshLayout)
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     private CoRecAdapter coRecAdapter;
 
@@ -51,5 +56,11 @@ public class FloorFragment extends Fragment {
 
     public void setModels(List<LocationsModel> models) {
         this.models = models;
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        floorTabAdapter.callRetrofit();
     }
 }

@@ -30,7 +30,6 @@ import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.Favorites;
 
 public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHolder> {
-
     private List<LocationsModel> locations;
     private List<LocationsModel> filteredLocations;
     private String[] favorites;

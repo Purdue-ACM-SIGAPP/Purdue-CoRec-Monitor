@@ -46,6 +46,8 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(coRecAdapter);
 
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         return v;
     }
 
@@ -61,6 +63,6 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
-        floorTabAdapter.callRetrofit();
+        floorTabAdapter.callRetrofit(swipeRefreshLayout);
     }
 }

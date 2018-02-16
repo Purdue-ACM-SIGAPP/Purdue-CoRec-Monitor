@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		this.context = context;
 		this.locations = new ArrayList<>();
 		this.fragments = new ArrayList<>();
-		callRetrofit();
+		callRetrofit(null);
 	}
 
 	private void parseData(List<LocationsModel> data) {
@@ -69,7 +70,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		//context.swipeRefreshLayout.setRefreshing(false);
 	}
 
-	public void callRetrofit() {
+	public void callRetrofit(final SwipeRefreshLayout swipeRefreshLayout) {
 		CoRecApiHelper.getInstance().getAllLocations().enqueue(new Callback<List<LocationsModel>>() {
 			@Override
 			public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
@@ -92,7 +93,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 							.setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialogInterface, int i) {
-									callRetrofit();
+									callRetrofit(swipeRefreshLayout);
 								}
 							}).setNegativeButton(R.string.okay, new DialogInterface.OnClickListener() {
 								@Override
@@ -104,6 +105,9 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 					failure.show();
 				}
 				parseData(response.body());
+				if(swipeRefreshLayout != null) {
+					swipeRefreshLayout.setRefreshing(false);
+				}
 			}
 
 			@Override
@@ -115,7 +119,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 						.setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
-								callRetrofit();
+								callRetrofit(swipeRefreshLayout);
 							}
 						});
 				AlertDialog failure = alertDialogBuilder.create();

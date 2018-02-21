@@ -49,7 +49,8 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void searchLocations(String s) {
-        coRecAdapter.searchLocations(s);
+        coRecAdapter.setSearchText(s);
+        coRecAdapter.reorderList();
     }
 
     public void setModels(List<LocationsModel> models, Context c) {

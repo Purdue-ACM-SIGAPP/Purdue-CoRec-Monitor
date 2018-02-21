@@ -34,6 +34,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     private List<LocationsModel> filteredLocations;
     private String[] favorites;
     private Context context;
+    private String searchText = "";
 
     public CoRecAdapter(Context context, List<LocationsModel> data) {
         this.locations = data;
@@ -46,7 +47,20 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         reorderList();
     }
 
-    private void reorderList() {
+    public void reorderList() {
+
+        if (searchText.length() != 0) {
+            filteredLocations = new ArrayList<>();
+            for (LocationsModel location : locations) {
+                if (location.LocationName.toLowerCase().contains(searchText.toLowerCase())) {
+                    filteredLocations.add(location);
+                }
+            }
+        }
+        else {
+            filteredLocations = locations;
+        }
+
         if (Favorites.getFavorites(context) != null) {
             this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
         }
@@ -72,23 +86,10 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 }
             }
         }
-    }
 
-    public void searchLocations(String s) {
-        if (s.length() != 0) {
-            filteredLocations = new ArrayList<>();
-            for (LocationsModel location : locations) {
-                if (location.LocationName.toLowerCase().contains(s.toLowerCase())) {
-                    filteredLocations.add(location);
-                }
-            }
-        }
-        else {
-            filteredLocations = locations;
-        }
-        reorderList();
         notifyDataSetChanged();
     }
+
 
     @Override
     public AreaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -154,6 +155,10 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     @Override
     public int getItemCount() {
         return filteredLocations.size();
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 
 

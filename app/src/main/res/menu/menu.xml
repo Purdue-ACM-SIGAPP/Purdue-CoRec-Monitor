@@ -12,6 +12,6 @@
         android:id="@+id/action_fit"
         android:icon="@drawable/ic_directions_run"
         android:title="@string/google_fit"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
 </menu>

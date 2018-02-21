@@ -67,6 +67,8 @@ public class MainActivity extends ScreenTrackedActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
 
         final MenuItem searchButton = menu.findItem(R.id.action_search);
+        final MenuItem fitButton = menu.findItem(R.id.action_fit);
+
         final SearchView searchView = (SearchView) searchButton.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -88,7 +90,20 @@ public class MainActivity extends ScreenTrackedActivity {
             }
         });
 
-        final MenuItem fitButton = menu.findItem(R.id.action_fit);
+        searchButton.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                fitButton.setVisible(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                fitButton.setVisible(true);
+                return true;
+            }
+        });
+
         fitButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {

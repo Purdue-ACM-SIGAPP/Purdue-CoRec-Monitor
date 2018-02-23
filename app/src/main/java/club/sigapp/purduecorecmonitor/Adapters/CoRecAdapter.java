@@ -104,38 +104,6 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         String headString = "Headcount: " + filteredLocations.get(position).Count + " / Max: " + filteredLocations.get(position).Capacity;
         holder.headCount.setText(headString);
 
-        switch(filteredLocations.get(position).Location.Zone.ZoneName){
-            case "CoRec Basement":
-                Picasso.with(context).load(R.drawable.ic_floor_basement).fit().into(holder.icon);
-                break;
-            case "CoRec Level 1":
-                Picasso.with(context).load(R.drawable.ic_floor_one).fit().into(holder.icon);
-                break;
-            case "CoRec Level 2":
-                Picasso.with(context).load(R.drawable.ic_floor_two).fit().into(holder.icon);
-                break;
-            case "CoRec Level 3":
-                Picasso.with(context).load(R.drawable.ic_floor_three).fit().into(holder.icon);
-                break;
-            case "CoRec Level 4":
-                Picasso.with(context).load(R.drawable.ic_floor_four).fit().into(holder.icon);
-                break;
-            case "TREC":
-                Picasso.with(context).load(R.drawable.ic_floor_trec).fit().into(holder.icon);
-                break;
-            case "Comp Pool":
-                Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
-                break;
-            case "Dive Pool":
-                Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
-                break;
-            case "Rec Pool":
-                Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
-                break;
-            default:
-                Log.e("MainActivity", "Unknown zone name.");
-        }
-
         boolean favorited = false;
 
         if (favorites != null) {
@@ -175,9 +143,6 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @BindView(R.id.card_main_title)
         TextView cardTitle;
-
-        @BindView (R.id.icons)
-        ImageView icon;
 
         public AreaViewHolder(View itemView) {
             super(itemView);

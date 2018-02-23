@@ -6,5 +6,12 @@
         android:icon="@drawable/ic_search_black_24dp"
         app:showAsAction="always|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:title="@string/search"/>
+        android:title="@string/search"
+        />
+    <item
+        android:id="@+id/action_fit"
+        android:icon="@drawable/ic_directions_run"
+        android:title="@string/google_fit"
+        app:showAsAction="always"
+        />
 </menu>

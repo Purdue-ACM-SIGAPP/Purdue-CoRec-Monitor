@@ -15,15 +15,6 @@
         android:layout_margin="8dp"
         >
 
-        <ImageView
-            android:id="@+id/icons"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_floor_basement" />
-
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -21,6 +21,7 @@ import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
+import club.sigapp.purduecorecmonitor.Utils.Favorites;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +30,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 	private ArrayList<String> locations;
 	private ArrayList<FloorFragment> fragments;
 	private MainActivity context;
+	private static final String FAVORITEKEY = "favorites";
 
 	public FloorTabAdapter(FragmentManager fm, MainActivity context) {
 		super(fm);
@@ -42,17 +44,39 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		fragments.clear();
 		locations.clear();
 		notifyDataSetChanged();
-
 		HashMap<String, List<LocationsModel>> partitionedData = new HashMap<>();
+		String[] favorites;
+		if (Favorites.getFavorites(context) != null) {
+			favorites = Favorites.getFavorites(context).toArray(new String[0]);
+		} else {
+			favorites = new String[] {};
+		}
 		fragments = new ArrayList<>();
 		for (LocationsModel model : data) {
 			String floor = model.Location.Zone.ZoneName.replace("CoRec ", "");
 			if (!partitionedData.containsKey(floor)) {
 				partitionedData.put(floor, new ArrayList<LocationsModel>());
 			}
-
 			partitionedData.get(floor).add(model);
+			for (String s : favorites){
+				if (s.equals(model.LocationId)){
+					if (!partitionedData.containsKey(FAVORITEKEY)){
+						partitionedData.put(FAVORITEKEY, new ArrayList<LocationsModel>());
+					}
+					LocationsModel m = new LocationsModel();
+					m.Count = model.Count;
+					m.Location = model.Location;
+					m.LocationName = model.LocationName;
+					m.Capacity = model.Capacity;
+					m.LocationId = model.LocationId;
+					m.DisplayName = model.DisplayName;
+					m.EntryDate = model.EntryDate;
+					m.ZoneId = model.ZoneId;
+					partitionedData.get(FAVORITEKEY).add(m);
+				}
+			}
 		}
+
 
 		locations = new ArrayList<>(partitionedData.keySet());
 		Collections.sort(locations, new Comparator<String>() {
@@ -142,6 +166,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 
 	private int getLevelRank(String l) {
 		switch (l) {
+			case FAVORITEKEY: return -1;
 			case "Basement": return 0;
 			case "Level 1": return 1;
 			case "Level 2": return 2;

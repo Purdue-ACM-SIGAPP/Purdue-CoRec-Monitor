@@ -20,4 +20,5 @@
     <string name="weekly_statistics">Weekly Statistics: </string>
     <string name="hourly_statistics">Hourly Statistics: </string>
     <string name="google_fit">Google Fit</string>
+    <string name="no_favorites">Click the star by a location to add it to your favorites!</string>
 </resources>

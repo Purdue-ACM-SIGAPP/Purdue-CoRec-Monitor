@@ -18,6 +18,7 @@ import java.util.List;
 
 import club.sigapp.purduecorecmonitor.Activities.MainActivity;
 import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
+import club.sigapp.purduecorecmonitor.Models.Location;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
@@ -79,6 +80,11 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 
 
 		locations = new ArrayList<>(partitionedData.keySet());
+		boolean displayEmptyFavorites = false;
+		if (!locations.contains(FAVORITEKEY)) {
+			locations.add(FAVORITEKEY);
+			displayEmptyFavorites = true;
+		}
 		Collections.sort(locations, new Comparator<String>() {
 			@Override
 			public int compare(String s1, String s2) {
@@ -87,7 +93,19 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		});
 		for (String s : locations) {
 			FloorFragment fragment = new FloorFragment();
-			fragment.setModels(partitionedData.get(s), context);
+			if (s.equals(FAVORITEKEY)) {
+				List<LocationsModel> favModels;
+				if (displayEmptyFavorites){
+					favModels = new ArrayList<>();
+				} else {
+					favModels = partitionedData.get(FAVORITEKEY);
+				}
+				Favorites.initalizeFavoriteFragment(favModels, context);
+				fragment.setFavFragment(true);
+				fragment.setModels(favModels, context);
+			} else {
+				fragment.setModels(partitionedData.get(s), context);
+			}
 			fragments.add(fragment);
 		}
 		notifyDataSetChanged();

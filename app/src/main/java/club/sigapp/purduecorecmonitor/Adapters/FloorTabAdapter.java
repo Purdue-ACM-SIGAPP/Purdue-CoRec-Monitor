@@ -41,7 +41,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 	private void parseData(List<LocationsModel> data) {
 		fragments.clear();
 		locations.clear();
-		notifyDataSetChanged();
 
 		HashMap<String, List<LocationsModel>> partitionedData = new HashMap<>();
 		fragments = new ArrayList<>();
@@ -107,7 +106,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 					AlertDialog failure = alertDialogBuilder.create();
 					failure.show();
 				}
-				clearFragments();
 				parseData(response.body());
 				if(swipeRefreshLayout != null) {
 					swipeRefreshLayout.setRefreshing(false);
@@ -153,19 +151,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 			case "Dive Pool": return 7;
 			case "Rec Pool": return 8;
 			default: return 9;
-		}
-	}
-
-	private void clearFragments() {
-		if (fragments != null) {
-			for (Fragment fragment : fragments) {
-				if (fragment != null) {
-					FragmentManager fragmentManager = fragment.getFragmentManager();
-					if (fragmentManager != null) {
-						fragmentManager.beginTransaction().remove(fragment).commit();
-					}
-				}
-			}
 		}
 	}
 

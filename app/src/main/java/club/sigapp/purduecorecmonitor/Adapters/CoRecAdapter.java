@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
+import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.Models.Location;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
@@ -35,8 +36,10 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     private String[] favorites;
     private Context context;
     private String searchText = "";
+    private FloorFragment parent;
 
-    public CoRecAdapter(Context context, List<LocationsModel> data) {
+    public CoRecAdapter(Context context, List<LocationsModel> data, FloorFragment parent) {
+        this.parent = parent;
         this.locations = data;
         this.filteredLocations = this.locations;
         if (Favorites.getFavorites(context) != null) {
@@ -181,6 +184,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId, filteredLocations.get(this.getLayoutPosition()));
             }
+            parent.forceUpdateNeighbors();
 
 
             reorderList();

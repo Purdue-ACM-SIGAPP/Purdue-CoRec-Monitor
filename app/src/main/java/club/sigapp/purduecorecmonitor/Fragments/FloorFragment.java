@@ -37,6 +37,7 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private CoRecAdapter coRecAdapter;
     boolean isFavFragment = false;
+    int myFragmentIndex;
 
     @Nullable
     @Override
@@ -54,15 +55,29 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void forceUpdateNeighbors(){
+        if ((myFragmentIndex == 0) && (FloorTabAdapter.getFragments().size() > 1)){
+            FloorTabAdapter.getFragments().get(1).forceFavoriteUpdate();
+        } else if (myFragmentIndex == 1){
+            FloorTabAdapter.getFragments().get(0).forceFavoriteUpdate();
+        }
+    }
+
+    public void forceFavoriteUpdate(){
         getAdaptor().setFavorites(Favorites.getRuntimeFavorites());
         if (isFavFragment){
             getAdaptor().setLocations(Favorites.getFavoriteModels());
             getAdaptor().notifyDataSetChanged();
             checkDisplayNoFavorites();
+        } else if (myFragmentIndex == 1){
+            getAdaptor().notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        forceFavoriteUpdate();
     }
 
     public void searchLocations(String s) {
@@ -71,8 +86,16 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void setModels(List<LocationsModel> models, Context c) {
-        coRecAdapter = new CoRecAdapter(c, models);
+        coRecAdapter = new CoRecAdapter(c, models, this);
         coRecAdapter.notifyDataSetChanged();
+    }
+
+    public int getMyFragmentIndex() {
+        return myFragmentIndex;
+    }
+
+    public void setMyFragmentIndex(int myFragmentIndex) {
+        this.myFragmentIndex = myFragmentIndex;
     }
 
     @Override

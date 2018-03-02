@@ -29,7 +29,7 @@ import retrofit2.Response;
 
 public class FloorTabAdapter extends FragmentPagerAdapter {
 	private ArrayList<String> locations;
-	private ArrayList<FloorFragment> fragments;
+	private static ArrayList<FloorFragment> fragments;
 	private MainActivity context;
 	private static final String FAVORITEKEY = "favorites";
 
@@ -106,6 +106,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 			} else {
 				fragment.setModels(partitionedData.get(s), context);
 			}
+			fragment.setMyFragmentIndex(fragments.size());
 			fragments.add(fragment);
 		}
 		notifyDataSetChanged();
@@ -212,5 +213,9 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 	@Override
 	public int getCount() {
 		return fragments.size();
+	}
+
+	public static ArrayList<FloorFragment> getFragments() {
+		return fragments;
 	}
 }

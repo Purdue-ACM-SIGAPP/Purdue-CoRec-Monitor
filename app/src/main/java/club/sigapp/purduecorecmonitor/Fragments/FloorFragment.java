@@ -55,15 +55,15 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return v;
     }
 
-    public void forceUpdateNeighbors(){
+    public void updateNeighbors(){
         if ((myFragmentIndex == 0) && (FloorTabAdapter.getFragments().size() > 1)){
-            FloorTabAdapter.getFragments().get(1).forceFavoriteUpdate();
+            FloorTabAdapter.getFragments().get(1).favoritesUpdate();
         } else if (myFragmentIndex == 1){
-            FloorTabAdapter.getFragments().get(0).forceFavoriteUpdate();
+            FloorTabAdapter.getFragments().get(0).favoritesUpdate();
         }
     }
 
-    public void forceFavoriteUpdate(){
+    public void favoritesUpdate(){
         getAdaptor().setFavorites(Favorites.getRuntimeFavorites());
         if (isFavFragment){
             getAdaptor().setLocations(Favorites.getFavoriteModels());
@@ -77,7 +77,7 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onResume() {
         super.onResume();
-        forceFavoriteUpdate();
+        favoritesUpdate();
     }
 
     public void searchLocations(String s) {

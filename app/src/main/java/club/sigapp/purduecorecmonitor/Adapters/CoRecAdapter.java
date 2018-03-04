@@ -4,15 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +20,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
-import club.sigapp.purduecorecmonitor.Models.Location;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
@@ -184,7 +179,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId, filteredLocations.get(this.getLayoutPosition()));
             }
-            parent.forceUpdateNeighbors();
+            parent.updateNeighbors();
 
 
             reorderList();

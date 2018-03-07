@@ -88,6 +88,11 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         notifyDataSetChanged();
     }
 
+    public void searchLocations(String s){
+        this.searchText = s;
+        reorderList();
+    }
+
 
     @Override
     public AreaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

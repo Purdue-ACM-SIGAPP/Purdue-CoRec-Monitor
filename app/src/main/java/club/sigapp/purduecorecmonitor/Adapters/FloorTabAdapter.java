@@ -179,12 +179,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		});
 	}
 
-	public void searchLocations(String s) {
-		for (FloorFragment fragment : fragments) {
-			fragment.searchLocations(s);
-		}
-	}
-
 	private int getLevelRank(String l) {
 		switch (l) {
 			case FAVORITEKEY: return -1;

@@ -81,8 +81,7 @@ public class MainActivity extends ScreenTrackedActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                coRecAdapter.setSearchText(query);
-                coRecAdapter.reorderList();
+                coRecAdapter.searchLocations(query);
                 View view = getCurrentFocus();
                 if (view != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -94,8 +93,7 @@ public class MainActivity extends ScreenTrackedActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                coRecAdapter.setSearchText(s);
-                coRecAdapter.reorderList();
+                coRecAdapter.searchLocations(s);
                 return true;
             }
         });

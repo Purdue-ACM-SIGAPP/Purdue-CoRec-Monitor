@@ -126,7 +126,7 @@ public class MainActivity extends ScreenTrackedActivity {
                 viewPager.setVisibility(View.VISIBLE);
                 tabLayout.setVisibility(View.VISIBLE);
                 recyclerViewSearch.setVisibility(View.GONE);
-                floorTabAdapter.getFragments().get(1).updateNeighbors();
+                floorTabAdapter.getFragments().get(viewPager.getCurrentItem()).updateNeighbors();
                 return true;
             }
         });

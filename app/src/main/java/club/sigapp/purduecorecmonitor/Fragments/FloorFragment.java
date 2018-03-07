@@ -56,9 +56,10 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void updateNeighbors(){
-        if(myFragmentIndex - 1 > 0){
+        if(myFragmentIndex - 1 >= 0){
             FloorTabAdapter.getFragments().get(myFragmentIndex - 1).favoritesUpdate();
         }
+        FloorTabAdapter.getFragments().get(myFragmentIndex).favoritesUpdate();
         if(myFragmentIndex + 1 < FloorTabAdapter.getFragments().size()){
             FloorTabAdapter.getFragments().get(myFragmentIndex + 1).favoritesUpdate();
         }
@@ -76,7 +77,7 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (isFavFragment){
             getAdaptor().setLocations(Favorites.getFavoriteModels());
             getAdaptor().notifyDataSetChanged();
-            checkDisplayNoFavorites();
+            checkDisplayNoFavorites(Favorites.getFavoriteModels().size());
         } else if (myFragmentIndex == 1){
             getAdaptor().notifyDataSetChanged();
         }
@@ -116,8 +117,8 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return (CoRecAdapter) recyclerView.getAdapter();
     }
 
-    public void checkDisplayNoFavorites(){
-        if (getAdaptor().getItemCount() == 0){
+    public void checkDisplayNoFavorites(int size){
+        if (size == 0){
             noFavsText.setVisibility(View.VISIBLE);
         } else {
             noFavsText.setVisibility(View.GONE);

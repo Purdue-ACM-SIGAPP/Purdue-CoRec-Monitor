@@ -4,15 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
-import club.sigapp.purduecorecmonitor.Models.Location;
+import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
@@ -35,8 +31,10 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     private String[] favorites;
     private Context context;
     private String searchText = "";
+    private FloorFragment parent;
 
-    public CoRecAdapter(Context context, List<LocationsModel> data) {
+    public CoRecAdapter(Context context, List<LocationsModel> data, FloorFragment parent) {
+        this.parent = parent;
         this.locations = data;
         this.filteredLocations = this.locations;
         if (Favorites.getFavorites(context) != null) {
@@ -129,6 +127,13 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         this.searchText = searchText;
     }
 
+    public void setLocations(List<LocationsModel> locations) {
+        this.locations = locations;
+    }
+
+    public void setFavorites(String[] favorites){
+        this.favorites = favorites;
+    }
 
     public class AreaViewHolder extends RecyclerView.ViewHolder {
 
@@ -172,8 +177,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
             } else {
                 //Not in favorites yet - change to favorited star and add to favorites
                 favButton.setImageResource(R.drawable.ic_favorited_star);
-                Favorites.addFavorite(context, locationId);
+                Favorites.addFavorite(context, locationId, filteredLocations.get(this.getLayoutPosition()));
             }
+            parent.updateNeighbors();
 
 
             reorderList();
@@ -181,5 +187,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         }
 
+    }
+
+    public List<LocationsModel> getLocations() {
+        return locations;
     }
 }

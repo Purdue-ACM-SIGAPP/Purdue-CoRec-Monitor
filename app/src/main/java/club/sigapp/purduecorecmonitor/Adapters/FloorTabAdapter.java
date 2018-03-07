@@ -32,6 +32,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 	private static ArrayList<FloorFragment> fragments;
 	private MainActivity context;
 	private static final String FAVORITEKEY = "favorites";
+	public static List<LocationsModel> locationsModels;
 
 	public FloorTabAdapter(FragmentManager fm, MainActivity context) {
 		super(fm);
@@ -44,6 +45,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 	private void parseData(List<LocationsModel> data) {
 		fragments.clear();
 		locations.clear();
+		locationsModels = data;
 		notifyDataSetChanged();
 		HashMap<String, List<LocationsModel>> partitionedData = new HashMap<>();
 		String[] favorites;
@@ -175,12 +177,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 				failure.show();
 			}
 		});
-	}
-
-	public void searchLocations(String s) {
-		for (FloorFragment fragment : fragments) {
-			fragment.searchLocations(s);
-		}
 	}
 
 	private int getLevelRank(String l) {

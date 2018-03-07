@@ -88,6 +88,11 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         notifyDataSetChanged();
     }
 
+    public void searchLocations(String s){
+        this.searchText = s;
+        reorderList();
+    }
+
 
     @Override
     public AreaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -179,7 +184,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId, filteredLocations.get(this.getLayoutPosition()));
             }
-            parent.updateNeighbors();
+            if(parent != null) {
+                parent.updateNeighbors();
+            }
 
 
             reorderList();

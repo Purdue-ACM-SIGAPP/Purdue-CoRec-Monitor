@@ -56,11 +56,19 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void updateNeighbors(){
+        if(myFragmentIndex - 1 > 0){
+            FloorTabAdapter.getFragments().get(myFragmentIndex - 1).favoritesUpdate();
+        }
+        if(myFragmentIndex + 1 < FloorTabAdapter.getFragments().size()){
+            FloorTabAdapter.getFragments().get(myFragmentIndex + 1).favoritesUpdate();
+        }
+        /*
         if ((myFragmentIndex == 0) && (FloorTabAdapter.getFragments().size() > 1)){
             FloorTabAdapter.getFragments().get(1).favoritesUpdate();
         } else if (myFragmentIndex == 1){
             FloorTabAdapter.getFragments().get(0).favoritesUpdate();
         }
+        */
     }
 
     public void favoritesUpdate(){

@@ -179,7 +179,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId, filteredLocations.get(this.getLayoutPosition()));
             }
-            parent.updateNeighbors();
+            if(parent != null) {
+                parent.updateNeighbors();
+            }
 
 
             reorderList();

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -22,9 +24,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
+import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
+import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.R;
 
 public class MainActivity extends ScreenTrackedActivity {
@@ -40,8 +44,12 @@ public class MainActivity extends ScreenTrackedActivity {
     @BindView(R.id.status)
     public TextView status;
 
+    @BindView(R.id.recycler_view_search)
+    public RecyclerView recyclerViewSearch;
+
     final private Context context = this;
     public static FloorTabAdapter floorTabAdapter;
+    public static CoRecAdapter coRecAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +81,8 @@ public class MainActivity extends ScreenTrackedActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                floorTabAdapter.searchLocations(query);
+                coRecAdapter.setSearchText(query);
+                coRecAdapter.reorderList();
                 View view = getCurrentFocus();
                 if (view != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -85,7 +94,8 @@ public class MainActivity extends ScreenTrackedActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                floorTabAdapter.searchLocations(s);
+                coRecAdapter.setSearchText(s);
+                coRecAdapter.reorderList();
                 return true;
             }
         });
@@ -94,12 +104,29 @@ public class MainActivity extends ScreenTrackedActivity {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
                 fitButton.setVisible(false);
+                viewPager.setVisibility(View.GONE);
+                tabLayout.setVisibility(View.GONE);
+                recyclerViewSearch.setVisibility(View.VISIBLE);
+
+                if(coRecAdapter == null) {
+                    coRecAdapter = new CoRecAdapter(context, floorTabAdapter.locationsModels, null);
+                }else{
+                    coRecAdapter.setLocations(floorTabAdapter.locationsModels);
+                }
+                coRecAdapter.reorderList();
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+                recyclerViewSearch.setLayoutManager(linearLayoutManager);
+                recyclerViewSearch.setAdapter(coRecAdapter);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 fitButton.setVisible(true);
+                viewPager.setVisibility(View.VISIBLE);
+                tabLayout.setVisibility(View.VISIBLE);
+                recyclerViewSearch.setVisibility(View.GONE);
+                floorTabAdapter.getFragments().get(1).updateNeighbors();
                 return true;
             }
         });

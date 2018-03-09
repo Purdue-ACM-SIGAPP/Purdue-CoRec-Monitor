@@ -54,6 +54,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		} else {
 			favorites = new String[] {};
 		}
+		//must instantiate list if first time through
 		if(fragments == null) {
 			fragments = new ArrayList<>();
 		}

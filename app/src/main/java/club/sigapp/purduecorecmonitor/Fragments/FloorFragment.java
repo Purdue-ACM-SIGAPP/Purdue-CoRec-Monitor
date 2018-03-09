@@ -58,7 +58,6 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void updateNeighbors(){
         if(myFragmentIndex - 1 >= 0){
-            System.out.println("my fragment index for crash: " + myFragmentIndex);
             FloorTabAdapter.getFragments().get(myFragmentIndex - 1).favoritesUpdate();
         }
         FloorTabAdapter.getFragments().get(myFragmentIndex).favoritesUpdate();

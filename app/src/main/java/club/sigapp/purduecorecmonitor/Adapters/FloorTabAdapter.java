@@ -43,10 +43,10 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 	}
 
 	private void parseData(List<LocationsModel> data) {
-		fragments.clear();
+		//fragments.clear();
 		locations.clear();
 		locationsModels = data;
-		notifyDataSetChanged();
+		//notifyDataSetChanged();
 		HashMap<String, List<LocationsModel>> partitionedData = new HashMap<>();
 		String[] favorites;
 		if (Favorites.getFavorites(context) != null) {
@@ -54,7 +54,9 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 		} else {
 			favorites = new String[] {};
 		}
-		fragments = new ArrayList<>();
+		if(fragments == null) {
+			fragments = new ArrayList<>();
+		}
 		for (LocationsModel model : data) {
 			String floor = model.Location.Zone.ZoneName.replace("CoRec ", "");
 			if (!partitionedData.containsKey(floor)) {
@@ -93,23 +95,49 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 				return getLevelRank(s1) - getLevelRank(s2);
 			}
 		});
-		for (String s : locations) {
-			FloorFragment fragment = new FloorFragment();
-			if (s.equals(FAVORITEKEY)) {
-				List<LocationsModel> favModels;
-				if (displayEmptyFavorites){
-					favModels = new ArrayList<>();
+		if(fragments.size() == 0) {
+			//first time creating fragments
+			for (String s : locations) {
+				FloorFragment fragment = new FloorFragment();
+				if (s.equals(FAVORITEKEY)) {
+					List<LocationsModel> favModels;
+					if (displayEmptyFavorites) {
+						favModels = new ArrayList<>();
+					} else {
+						favModels = partitionedData.get(FAVORITEKEY);
+					}
+					Favorites.initalizeFavoriteFragment(favModels, context);
+					fragment.setFavFragment(true);
+					fragment.setModels(favModels, context);
 				} else {
-					favModels = partitionedData.get(FAVORITEKEY);
+					fragment.setModels(partitionedData.get(s), context);
 				}
-				Favorites.initalizeFavoriteFragment(favModels, context);
-				fragment.setFavFragment(true);
-				fragment.setModels(favModels, context);
-			} else {
-				fragment.setModels(partitionedData.get(s), context);
+				fragment.setMyFragmentIndex(fragments.size());
+				fragment.setLocationString(s);
+				fragments.add(fragment);
 			}
-			fragment.setMyFragmentIndex(fragments.size());
-			fragments.add(fragment);
+		}else{
+			//updating fragments with the new info
+			for(FloorFragment fragment: fragments){
+                if (fragment.getLocationString().equals(FAVORITEKEY)) {
+                    List<LocationsModel> favModels;
+                    if (displayEmptyFavorites) {
+                        favModels = new ArrayList<>();
+                    } else {
+                        favModels = partitionedData.get(FAVORITEKEY);
+                    }
+                    Favorites.initalizeFavoriteFragment(favModels, context);
+                    fragment.setFavFragment(true);
+                    fragment.setModels(favModels, context);
+                }else {
+                    List<LocationsModel> model = partitionedData.get(fragment.getLocationString());
+                    if (model != null) {
+                        fragment.setModels(model, context);
+                    } else {
+                        fragment.setModels(new ArrayList<LocationsModel>(), context);
+                    }
+                }
+			}
 		}
 		notifyDataSetChanged();
 		//context.swipeRefreshLayout.setRefreshing(false);

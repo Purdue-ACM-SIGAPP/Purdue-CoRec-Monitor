@@ -119,7 +119,7 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
 			}
 		}else{
 			//updating fragments with the new info
-			for(FloorFragment fragment: fragments){
+            for(FloorFragment fragment: fragments){
                 if (fragment.getLocationString().equals(FAVORITEKEY)) {
                     List<LocationsModel> favModels;
                     if (displayEmptyFavorites) {

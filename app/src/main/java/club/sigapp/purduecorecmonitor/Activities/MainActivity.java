@@ -125,6 +125,8 @@ public class MainActivity extends ScreenTrackedActivity {
                 tabLayout.setVisibility(View.VISIBLE);
                 recyclerViewSearch.setVisibility(View.GONE);
                 floorTabAdapter.getFragments().get(viewPager.getCurrentItem()).updateNeighbors();
+                //force favorites to update itself with new favorites list
+                floorTabAdapter.getFragments().get(0).favoritesUpdate();
                 return true;
             }
         });

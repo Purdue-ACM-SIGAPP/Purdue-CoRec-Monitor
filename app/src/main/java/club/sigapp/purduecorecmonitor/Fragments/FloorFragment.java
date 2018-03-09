@@ -38,6 +38,7 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private CoRecAdapter coRecAdapter;
     boolean isFavFragment = false;
     int myFragmentIndex;
+    String locationString;
 
     @Nullable
     @Override
@@ -100,6 +101,14 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void setMyFragmentIndex(int myFragmentIndex) {
         this.myFragmentIndex = myFragmentIndex;
+    }
+
+    public String getLocationString() {
+        return locationString;
+    }
+
+    public void setLocationString(String locationString) {
+        this.locationString = locationString;
     }
 
     @Override

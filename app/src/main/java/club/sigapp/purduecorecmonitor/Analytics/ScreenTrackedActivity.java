@@ -1,4 +1,5 @@
 package club.sigapp.purduecorecmonitor.Analytics;
+
 import android.support.v7.app.AppCompatActivity;
 
 /**

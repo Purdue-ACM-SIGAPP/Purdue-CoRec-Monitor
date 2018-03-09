@@ -58,12 +58,12 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return v;
     }
 
-    public void updateNeighbors(){
-        if(myFragmentIndex - 1 >= 0){
+    public void updateNeighbors() {
+        if (myFragmentIndex - 1 >= 0) {
             FloorTabAdapter.getFragments().get(myFragmentIndex - 1).favoritesUpdate();
         }
         FloorTabAdapter.getFragments().get(myFragmentIndex).favoritesUpdate();
-        if(myFragmentIndex + 1 < FloorTabAdapter.getFragments().size()){
+        if (myFragmentIndex + 1 < FloorTabAdapter.getFragments().size()) {
             FloorTabAdapter.getFragments().get(myFragmentIndex + 1).favoritesUpdate();
         }
         /*
@@ -75,13 +75,13 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         */
     }
 
-    public void favoritesUpdate(){
+    public void favoritesUpdate() {
         getAdaptor().setFavorites(Favorites.getRuntimeFavorites());
-        if (isFavFragment){
+        if (isFavFragment) {
             getAdaptor().setLocations(Favorites.getFavoriteModels());
             getAdaptor().notifyDataSetChanged();
             checkDisplayNoFavorites(Favorites.getFavoriteModels().size());
-        } else if (myFragmentIndex == 1){
+        } else if (myFragmentIndex == 1) {
             getAdaptor().notifyDataSetChanged();
         }
     }
@@ -119,12 +119,12 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         ((MainActivity) getActivity()).callRetrofit(swipeRefreshLayout);
     }
 
-    private CoRecAdapter getAdaptor(){ //don't call from other things
+    private CoRecAdapter getAdaptor() { //don't call from other things
         return (CoRecAdapter) recyclerView.getAdapter();
     }
 
-    public void checkDisplayNoFavorites(int size){
-        if (size == 0){
+    public void checkDisplayNoFavorites(int size) {
+        if (size == 0) {
             noFavsText.setVisibility(View.VISIBLE);
         } else {
             noFavsText.setVisibility(View.GONE);

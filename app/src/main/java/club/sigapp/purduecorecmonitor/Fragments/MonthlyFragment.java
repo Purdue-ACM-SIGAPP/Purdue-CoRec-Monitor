@@ -84,13 +84,13 @@ public class MonthlyFragment extends Fragment {
         statProgressBar.setVisibility(View.VISIBLE);
         statStatus.setVisibility(View.VISIBLE);
         monthlyChartLayout.setVisibility(View.GONE);
-        if (MonthlyStatsData.getInstance() != null){
+        if (MonthlyStatsData.getInstance() != null) {
             initializeMonthlyFragment(MonthlyStatsData.getInstance().getData());
         } else {
             CoRecApiHelper.getInstance().getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
                 @Override
                 public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
-                    if (response.code() == 200){
+                    if (response.code() == 200) {
                         List<MonthlyTrendsModel> monthlyTrendsModels = response.body();
                         MonthlyStatsData monthlyStatsData = new MonthlyStatsData();
                         monthlyStatsData.setData(monthlyTrendsModels);
@@ -113,7 +113,7 @@ public class MonthlyFragment extends Fragment {
 
     }
 
-    public void initializeMonthlyFragment(List<MonthlyTrendsModel> monthlyData){
+    public void initializeMonthlyFragment(List<MonthlyTrendsModel> monthlyData) {
         statProgressBar.setVisibility(View.GONE);
         statStatus.setVisibility(View.GONE);
         monthlyChartLayout.setVisibility(View.VISIBLE);
@@ -126,7 +126,7 @@ public class MonthlyFragment extends Fragment {
 
         for (Iterator<MonthlyTrendsModel> iterator = monthlyData.iterator(); iterator.hasNext(); ) {
             MonthlyTrendsModel monthModel = iterator.next();
-            if (monthModel.LocationId.equals(locationId)){
+            if (monthModel.LocationId.equals(locationId)) {
                 monthlyTrendsModel.add(monthModel);
             }
         }

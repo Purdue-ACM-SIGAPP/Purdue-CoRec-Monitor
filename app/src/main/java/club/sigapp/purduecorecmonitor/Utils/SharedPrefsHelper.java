@@ -11,4 +11,4 @@ public class SharedPrefsHelper {
     public static SharedPreferences getSharedPrefs(Context context) {
         return context.getSharedPreferences("club.sigapp.purduecorecmonitor", Context.MODE_PRIVATE);
     }
-            }
+}

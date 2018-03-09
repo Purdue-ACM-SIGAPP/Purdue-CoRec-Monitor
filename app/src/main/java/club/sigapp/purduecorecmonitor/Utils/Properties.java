@@ -8,7 +8,11 @@ public class Properties {
     public static String[] getDaysOfWeek() {
         return daysOfWeek;
     }
-    public static String[] getMonthsOfYear() {return monthsOfYear;}
+
+    public static String[] getMonthsOfYear() {
+        return monthsOfYear;
+    }
+
     public static String[] getHoursOfDay() {
         return hoursOfDay;
     }

@@ -20,7 +20,7 @@ import club.sigapp.purduecorecmonitor.R;
 
 /**
  * Delegate class for the Analytics.
- *
+ * <p>
  * It will handle containing the tracker and posting events to move that out
  * of the rest of the app.
  */
@@ -38,12 +38,13 @@ public class AnalyticsHelper {
 
     /**
      * Must be called first, ideally in the Application onCreate().
+     *
      * @param application The application for the GA instance.
      */
     public synchronized static void initDefaultTracker(Application application) {
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(application);
 
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             analytics.setDryRun(true);
         }
         // Google Play runs some tests on our app that we don't want to track. This catches that.
@@ -94,13 +95,14 @@ public class AnalyticsHelper {
     /**
      * Start timing an event. This is a helper to track timing across threads or
      * across disparate parts of the app in an easier way. Coupled with endTiming(...)
+     *
      * @param category
      * @param variable
      * @param label
      * @return The key for the hashmap. Should be passed to endTiming(...)
      */
     public static String startTiming(String category, String variable, String label) {
-        String key = category + SEPARATOR+ variable + SEPARATOR+ label;
+        String key = category + SEPARATOR + variable + SEPARATOR + label;
 
         mTimingMap.put(key, System.currentTimeMillis());
 
@@ -109,7 +111,7 @@ public class AnalyticsHelper {
 
 
     public static void endTiming(String category, String variable, String label) {
-        String key = category + SEPARATOR+ variable + SEPARATOR+ label;
+        String key = category + SEPARATOR + variable + SEPARATOR + label;
         endTiming(key);
     }
 
@@ -117,7 +119,7 @@ public class AnalyticsHelper {
         String[] split = key.split(SEPARATOR);
 
         Long startTime = mTimingMap.get(key);
-        if(startTime ==  null) {
+        if (startTime == null) {
             throw new IllegalStateException("The key provided does not have an associated timing.");
         }
 
@@ -126,10 +128,10 @@ public class AnalyticsHelper {
 
     /**
      * Used to get the default tracker for the app.
-     *
+     * <p>
      * Note: Only use this if you need to send a very customized event,
      * in general you should add extra methods to this class to manage events.
-     *
+     * <p>
      * This is marked as Deprecated to discourage directly using it.
      * Please make a relevant method in this class if you need
      * something for a specific use case.
@@ -156,13 +158,13 @@ public class AnalyticsHelper {
 
     /**
      * Sends a basic event hit for the given category, action, and name. Sends a 0 for result.
-     *
+     * <p>
      * NOTE: When using this method, strings should be added as constants
      * for the sake of consistency across hits.
      *
      * @param category Category of the event.
-     * @param action Action of the event.
-     * @param label Label of the event.
+     * @param action   Action of the event.
+     * @param label    Label of the event.
      */
     public static void sendEventHit(String category, String action, String label) {
         sendEventHit(category, action, label, -1);
@@ -170,14 +172,14 @@ public class AnalyticsHelper {
 
     /**
      * Sends a basic event hit for the given category, action, and name.
-     *
+     * <p>
      * NOTE: When using this method, strings should be added as constants
      * for the sake of consistency across hits.
      *
      * @param category Category of the event.
-     * @param action Action of the event.
-     * @param label Label of the event.
-     * @param value Value of the event.
+     * @param action   Action of the event.
+     * @param label    Label of the event.
+     * @param value    Value of the event.
      */
     public static void sendEventHit(String category, String action, String label, long value) {
         checkState();
@@ -189,12 +191,12 @@ public class AnalyticsHelper {
                     .setAction(action)
                     .setLabel(label);
 
-            if(value != -1) {
+            if (value != -1) {
                 eventBuilder.setValue(value);
             }
 
             mTracker.send(eventBuilder.build());
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e("AnalyticsException", e.getMessage());
         }
     }
@@ -204,7 +206,7 @@ public class AnalyticsHelper {
      * the first line of any method using the tracker.
      */
     private static void checkState() {
-        if(mTracker == null) {
+        if (mTracker == null) {
             throw new IllegalStateException("Tracker was not created! Call initDefaultTracker(Application) before this.");
         }
     }

@@ -54,8 +54,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                     filteredLocations.add(location);
                 }
             }
-        }
-        else {
+        } else {
             filteredLocations = locations;
         }
 
@@ -88,7 +87,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         notifyDataSetChanged();
     }
 
-    public void searchLocations(String s){
+    public void searchLocations(String s) {
         this.searchText = s;
         reorderList();
     }
@@ -132,7 +131,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         this.locations = locations;
     }
 
-    public void setFavorites(String[] favorites){
+    public void setFavorites(String[] favorites) {
         this.favorites = favorites;
     }
 
@@ -180,7 +179,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
                 favButton.setImageResource(R.drawable.ic_favorited_star);
                 Favorites.addFavorite(context, locationId, filteredLocations.get(this.getLayoutPosition()));
             }
-            if(parent != null) {
+            if (parent != null) {
                 parent.updateNeighbors();
             }
 

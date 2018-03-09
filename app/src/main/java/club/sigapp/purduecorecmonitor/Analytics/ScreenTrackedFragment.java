@@ -1,9 +1,10 @@
 package club.sigapp.purduecorecmonitor.Analytics;
+
 import android.support.v4.app.Fragment;
 
 /**
  * A way to cleanly track the screen view of a fragment.
- *
+ * <p>
  * While legal, probably shouldn't be added to an activity which has screen
  * tracking. Nor should fragments extend this if they don't plan to fill
  * the screen.

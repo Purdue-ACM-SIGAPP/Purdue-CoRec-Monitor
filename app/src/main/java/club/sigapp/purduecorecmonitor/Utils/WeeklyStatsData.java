@@ -9,15 +9,15 @@ public class WeeklyStatsData {
     private static WeeklyStatsData weeklyStatsData = null;
     private List<WeeklyTrendsModel> data;
 
-    public void setData(List<WeeklyTrendsModel> data){
+    public void setData(List<WeeklyTrendsModel> data) {
         this.data = data;
     }
 
-    public List<WeeklyTrendsModel> getData(){
+    public List<WeeklyTrendsModel> getData() {
         return data;
     }
 
-    public static void setInstance(WeeklyStatsData weeklyStats){
+    public static void setInstance(WeeklyStatsData weeklyStats) {
         weeklyStatsData = weeklyStats;
     }
 

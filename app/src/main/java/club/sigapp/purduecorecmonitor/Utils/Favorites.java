@@ -16,7 +16,7 @@ public class Favorites {
     static ArrayList<String> runtimeFavorites;
     static List<LocationsModel> favoriteModels;
 
-    public static void initalizeFavoriteFragment(List<LocationsModel> favs, Context c){
+    public static void initalizeFavoriteFragment(List<LocationsModel> favs, Context c) {
         favoriteModels = favs;
         SharedPreferences shared = SharedPrefsHelper.getSharedPrefs(c);
         if (shared.contains("favorites")) {
@@ -67,8 +67,8 @@ public class Favorites {
                 shared.edit().remove("favorites").apply();
                 shared.edit().putStringSet("favorites", favorites).apply();
                 runtimeFavorites.remove(toRemoveFavorite);
-                for (int i = 0; i < favoriteModels.size(); i++){
-                    if (favoriteModels.get(i).LocationId.equals(toRemoveFavorite)){
+                for (int i = 0; i < favoriteModels.size(); i++) {
+                    if (favoriteModels.get(i).LocationId.equals(toRemoveFavorite)) {
                         favoriteModels.remove(i);
                         break;
                     }

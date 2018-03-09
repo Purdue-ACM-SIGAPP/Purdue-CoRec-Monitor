@@ -141,7 +141,7 @@ public class WeeklyFragment extends Fragment {
         return view;
     }
 
-    private void initializeWeeklyFragment(List<WeeklyTrendsModel> data){
+    private void initializeWeeklyFragment(List<WeeklyTrendsModel> data) {
         weeklyTrendsModels = new ArrayList<>();
 
         statProgressBar.setVisibility(View.GONE);
@@ -280,7 +280,7 @@ public class WeeklyFragment extends Fragment {
             WeeklyTrendsModel data = dayOfWeek.get(i);
             entries.add(new Entry(data.EntryHour, data.Count));
             //find max count for hours
-            if(data.Count > max){
+            if (data.Count > max) {
                 max = data.Count;
             }
         }
@@ -325,12 +325,12 @@ public class WeeklyFragment extends Fragment {
         //decision tree for finding max of hours line graph
         if (capacity != 0 && max < capacity) {
             //sets max of chart to size where you can notice counts for high capacity locations
-            if(capacity > 5 * max){
+            if (capacity > 5 * max) {
                 left.setAxisMaximum(capacity / 5);
-            }else {
+            } else {
                 left.setAxisMaximum(capacity);
             }
-        }else {
+        } else {
             //if capacity is less than max(Count) then base max of graph on max(Count) instead of capacity
             left.setAxisMaximum(max + 5);
         }

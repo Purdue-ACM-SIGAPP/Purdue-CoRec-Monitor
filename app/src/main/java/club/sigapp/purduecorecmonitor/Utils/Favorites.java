@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 
 public class Favorites {

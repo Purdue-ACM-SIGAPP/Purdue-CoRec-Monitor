@@ -19,8 +19,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
-import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
+import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.Favorites;
@@ -128,10 +128,6 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         return filteredLocations.size();
     }
 
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
-    }
-
     public void setLocations(List<LocationsModel> locations) {
         this.locations = locations;
     }
@@ -194,9 +190,5 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         }
 
-    }
-
-    public List<LocationsModel> getLocations() {
-        return locations;
     }
 }

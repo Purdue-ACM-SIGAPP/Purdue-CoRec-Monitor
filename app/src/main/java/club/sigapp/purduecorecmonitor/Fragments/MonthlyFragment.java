@@ -32,8 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
 import club.sigapp.purduecorecmonitor.Models.MonthlyTrendsModel;
-import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
-import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.MonthlyComparator;

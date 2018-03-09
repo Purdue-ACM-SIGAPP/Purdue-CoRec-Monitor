@@ -17,6 +17,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.sigapp.purduecorecmonitor.Activities.MainActivity;
 import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
 import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
@@ -36,9 +37,10 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     TextView noFavsText;
 
     private CoRecAdapter coRecAdapter;
-    boolean isFavFragment = false;
-    int myFragmentIndex;
-    String locationString;
+
+    private boolean isFavFragment = false;
+    private int myFragmentIndex;
+    private String locationString;
 
     @Nullable
     @Override
@@ -114,7 +116,7 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
-        floorTabAdapter.callRetrofit(swipeRefreshLayout);
+        ((MainActivity) getActivity()).callRetrofit(swipeRefreshLayout);
     }
 
     private CoRecAdapter getAdaptor(){ //don't call from other things

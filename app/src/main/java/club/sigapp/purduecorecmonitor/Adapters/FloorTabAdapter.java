@@ -1,14 +1,10 @@
 package club.sigapp.purduecorecmonitor.Adapters;
 
-import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,14 +14,8 @@ import java.util.List;
 
 import club.sigapp.purduecorecmonitor.Activities.MainActivity;
 import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
-import club.sigapp.purduecorecmonitor.Models.Location;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
-import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
-import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.Favorites;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FloorTabAdapter extends FragmentPagerAdapter {
     private ArrayList<String> locations;
@@ -38,15 +28,13 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
         super(fm);
         this.context = context;
         this.locations = new ArrayList<>();
-        this.fragments = new ArrayList<>();
-        callRetrofit(null);
+        fragments = new ArrayList<>();
+        context.callRetrofit(null);
     }
 
-    private void parseData(List<LocationsModel> data) {
-        //fragments.clear();
+    public void parseData(List<LocationsModel> data) {
         locations.clear();
         locationsModels = data;
-        //notifyDataSetChanged();
         HashMap<String, List<LocationsModel>> partitionedData = new HashMap<>();
         String[] favorites;
         if (Favorites.getFavorites(context) != null) {
@@ -82,7 +70,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
                 }
             }
         }
-
 
         locations = new ArrayList<>(partitionedData.keySet());
         boolean displayEmptyFavorites = false;
@@ -141,71 +128,6 @@ public class FloorTabAdapter extends FragmentPagerAdapter {
             }
         }
         notifyDataSetChanged();
-        //context.swipeRefreshLayout.setRefreshing(false);
-    }
-
-    public void callRetrofit(final SwipeRefreshLayout swipeRefreshLayout) {
-        CoRecApiHelper.getInstance().getAllLocations().enqueue(new Callback<List<LocationsModel>>() {
-            @Override
-            public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
-                context.loadingBar.setVisibility(View.GONE);
-                context.status.setVisibility(View.GONE);
-
-                if (response.body() == null || response.code() != 200) {
-                    Toast.makeText(context, R.string.main_loading_fail, Toast.LENGTH_LONG).show();
-                    return;
-                }
-                boolean hasNonZero = false;
-                for (LocationsModel location : response.body()) {
-                    if (location.Count != 0) {
-                        hasNonZero = true;
-                        break;
-                    }
-                }
-                if (!hasNonZero) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                            .setTitle(R.string.corec_website_failure_title)
-                            .setMessage(R.string.corec_website_failure)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    callRetrofit(swipeRefreshLayout);
-                                }
-                            }).setNegativeButton(R.string.okay, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                    AlertDialog failure = alertDialogBuilder.create();
-                    failure.show();
-                }
-                parseData(response.body());
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<LocationsModel>> call, Throwable t) {
-                context.loadingBar.setVisibility(View.GONE);
-                context.status.setVisibility(View.GONE);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                        .setTitle(R.string.internet_error_title)
-                        .setMessage(R.string.internet_error_message)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                callRetrofit(swipeRefreshLayout);
-                            }
-                        });
-                AlertDialog failure = alertDialogBuilder.create();
-                failure.show();
-            }
-        });
     }
 
     private int getLevelRank(String l) {

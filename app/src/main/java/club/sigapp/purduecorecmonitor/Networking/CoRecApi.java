@@ -14,18 +14,9 @@ public interface CoRecApi {
     @GET("CurrentActivity")
     Call<List<LocationsModel>> getAllLocations();
 
-    @GET("locations/{location}")
-    Call<LocationsModel> getLocationDetails(@Path("location") String location);
-
     @GET("MonthlyTrends")
     Call<List<MonthlyTrendsModel>> getLocationMonthlyTrend();
 
     @GET("WeeklyTrends")
     Call<List<WeeklyTrendsModel>> getLocationWeeklyTrend();
-
-    @GET("lastupdatedtime/{location}")
-    Call<List<LastUpdatedModel>> getLocationLastUpdatedTime(@Path("location") String location);
-
-    @GET("lastupdatedtime")
-    Call<List<LastUpdatedModel>> getLastUpdatedTime();
 }

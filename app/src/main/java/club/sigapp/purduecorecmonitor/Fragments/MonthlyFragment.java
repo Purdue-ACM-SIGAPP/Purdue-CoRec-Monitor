@@ -37,6 +37,7 @@ import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
 import club.sigapp.purduecorecmonitor.R;
 import club.sigapp.purduecorecmonitor.Utils.MonthlyComparator;
+import club.sigapp.purduecorecmonitor.Utils.MonthlyStatsData;
 import club.sigapp.purduecorecmonitor.Utils.Properties;
 import club.sigapp.purduecorecmonitor.Utils.StackedLineGraphXAxisFormatter;
 import retrofit2.Call;
@@ -58,6 +59,10 @@ public class MonthlyFragment extends Fragment {
     LinearLayout monthlyChartLayout;
 
     String locationId;
+    Float maxCapacity;
+
+    XAxis xAxis;
+    YAxis left;
 
     public MonthlyFragment() {
         // Required empty public constructor
@@ -77,79 +82,104 @@ public class MonthlyFragment extends Fragment {
     }
 
     private void initializeStackedLineChart() {
-        final List<Entry> currentOccupancy = new ArrayList<>();
-        final List<Entry> maxOccupancy = new ArrayList<>();
-        final List<ILineDataSet> chartLines = new ArrayList<>();
-
-        CoRecApi api = CoRecApiHelper.getInstance();
 
         statProgressBar.setVisibility(View.VISIBLE);
         statStatus.setVisibility(View.VISIBLE);
         monthlyChartLayout.setVisibility(View.GONE);
-
-        api.getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
-            @Override
-            public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
-                statProgressBar.setVisibility(View.GONE);
-                statStatus.setVisibility(View.GONE);
-                monthlyChartLayout.setVisibility(View.VISIBLE);
-
-
-                if (response.code() == 200) {
-                    List<MonthlyTrendsModel> monthlyTrendsModel = response.body();
-
-                    for (Iterator<MonthlyTrendsModel> iterator = monthlyTrendsModel.iterator(); iterator.hasNext(); ) {
-                        if (!iterator.next().LocationId.equals(locationId))
-                            iterator.remove();
+        if (MonthlyStatsData.getInstance() != null){
+            initializeMonthlyFragment(MonthlyStatsData.getInstance().getData());
+        } else {
+            CoRecApiHelper.getInstance().getLocationMonthlyTrend().enqueue(new Callback<List<MonthlyTrendsModel>>() {
+                @Override
+                public void onResponse(Call<List<MonthlyTrendsModel>> call, Response<List<MonthlyTrendsModel>> response) {
+                    if (response.code() == 200){
+                        List<MonthlyTrendsModel> monthlyTrendsModels = response.body();
+                        MonthlyStatsData monthlyStatsData = new MonthlyStatsData();
+                        monthlyStatsData.setData(monthlyTrendsModels);
+                        MonthlyStatsData.setInstance(monthlyStatsData);
+                        initializeMonthlyFragment(MonthlyStatsData.getInstance().getData());
+                    } else {
+                        Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                     }
-
-                    Collections.sort(monthlyTrendsModel, new MonthlyComparator());
-                    for (MonthlyTrendsModel data : monthlyTrendsModel) {
-                        currentOccupancy.add(new Entry(data.EntryMonth, data.Count));
-                        maxOccupancy.add(new Entry(data.EntryMonth, data.Capacity));
-                    }
-
-                    LineDataSet maxCapacity = new LineDataSet(maxOccupancy, "Max Capacity");
-                    maxCapacity.setValueFormatter(new IValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                            return new DecimalFormat("###,###,##0").format(value);
-                        }
-                    });
-                    maxCapacity.setDrawFilled(true);
-                    maxCapacity.setFillColor(Color.BLACK);
-                    maxCapacity.setFillAlpha(155);
-                    LineDataSet currentCapacity = new LineDataSet(currentOccupancy, "Average Capacity");
-                    currentCapacity.setValueFormatter(new IValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                            return new DecimalFormat("###,###,##0").format(value);
-                        }
-                    });
-                    currentCapacity.enableDashedLine(10, 10, 0);
-                    currentCapacity.setDrawFilled(true);
-                    currentCapacity.setFillColor(Color.YELLOW);
-                    chartLines.add(maxCapacity);
-                    chartLines.add(currentCapacity);
-
-                    LineData lineData = new LineData(chartLines);
-                    stackedLineChart.setData(lineData);
-                    stackedLineChart.invalidate();
-                    stackedLineChart.animateX(1000);
-
-                } else {
-                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
+
+
+                @Override
+                public void onFailure(Call<List<MonthlyTrendsModel>> call, Throwable t) {
+                    Toast.makeText(getContext(), R.string.another_internet_error_message, Toast.LENGTH_LONG).show();
+                    statProgressBar.setVisibility(View.GONE);
+                    statStatus.setVisibility(View.GONE);
+                }
+            });
+        }
+
+    }
+
+    public void initializeMonthlyFragment(List<MonthlyTrendsModel> monthlyData){
+        statProgressBar.setVisibility(View.GONE);
+        statStatus.setVisibility(View.GONE);
+        monthlyChartLayout.setVisibility(View.VISIBLE);
+        final List<Entry> currentOccupancy = new ArrayList<>();
+        final List<Entry> maxOccupancy = new ArrayList<>();
+        final List<ILineDataSet> chartLines = new ArrayList<>();
+        xAxis = stackedLineChart.getXAxis();
+        left = stackedLineChart.getAxisLeft();
+        List<MonthlyTrendsModel> monthlyTrendsModel = new ArrayList<>();
+
+        for (Iterator<MonthlyTrendsModel> iterator = monthlyData.iterator(); iterator.hasNext(); ) {
+            MonthlyTrendsModel monthModel = iterator.next();
+            if (monthModel.LocationId.equals(locationId)){
+                monthlyTrendsModel.add(monthModel);
             }
+        }
 
+        try {
+            maxCapacity = (float) monthlyTrendsModel.get(0).Capacity;
+            left.setAxisMaximum(maxCapacity);
+        } catch (IndexOutOfBoundsException e) {
+            left.setAxisMaximum(10.0f);
+        }
 
+        Collections.sort(monthlyTrendsModel, new MonthlyComparator());
+        for (MonthlyTrendsModel data : monthlyTrendsModel) {
+            currentOccupancy.add(new Entry(data.EntryMonth, data.Count));
+            maxOccupancy.add(new Entry(data.EntryMonth, data.Capacity));
+        }
+
+        LineDataSet maxCapacity = new LineDataSet(maxOccupancy, "Max Capacity");
+        maxCapacity.setValueFormatter(new IValueFormatter() {
             @Override
-            public void onFailure(Call<List<MonthlyTrendsModel>> call, Throwable t) {
-
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return new DecimalFormat("###,###,##0").format(value);
             }
         });
-        XAxis xAxis = stackedLineChart.getXAxis();
-        xAxis.setLabelCount(13, true);
+        maxCapacity.setDrawFilled(true);
+        maxCapacity.setFillColor(Color.BLACK);
+        maxCapacity.setFillAlpha(155);
+        maxCapacity.setDrawValues(false);
+
+        LineDataSet currentCapacity = new LineDataSet(currentOccupancy, "Average Capacity");
+        currentCapacity.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return new DecimalFormat("###,###,##0").format(value);
+            }
+        });
+        currentCapacity.enableDashedLine(10, 10, 0);
+        currentCapacity.setDrawFilled(true);
+        currentCapacity.setFillColor(Color.YELLOW);
+        chartLines.add(maxCapacity);
+        chartLines.add(currentCapacity);
+
+        LineData lineData = new LineData(chartLines);
+        stackedLineChart.setData(lineData);
+        stackedLineChart.invalidate();
+        stackedLineChart.animateX(1000);
+
+
+        xAxis.setLabelCount(12, true);
+        xAxis.setAxisMinimum(1.0f);
+        xAxis.setAxisMaximum(12.0f);
         xAxis.setTextSize(11f);
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -166,7 +196,6 @@ public class MonthlyFragment extends Fragment {
         YAxis right = stackedLineChart.getAxisRight();
         right.setEnabled(false);
 
-        YAxis left = stackedLineChart.getAxisLeft();
         left.setLabelCount(10, false);
         left.setAxisMinimum(0.0f);
     }

@@ -37,11 +37,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.sigapp.purduecorecmonitor.Activities.StatisticsActivity;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
 import club.sigapp.purduecorecmonitor.Models.LocationsModel;
 import club.sigapp.purduecorecmonitor.Models.WeeklyTrendsModel;
 import club.sigapp.purduecorecmonitor.Networking.CoRecApi;
@@ -51,6 +53,7 @@ import club.sigapp.purduecorecmonitor.Utils.BarGraphXAxisFormatter;
 import club.sigapp.purduecorecmonitor.Utils.LineGraphXAxisFormatter;
 import club.sigapp.purduecorecmonitor.Utils.Properties;
 import club.sigapp.purduecorecmonitor.Utils.SharedPrefsHelper;
+import club.sigapp.purduecorecmonitor.Utils.WeeklyStatsData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -84,6 +87,9 @@ public class WeeklyFragment extends Fragment {
     @BindView(R.id.weeklyStatsLayout)
     LinearLayout weeklyStatsLayout;
 
+    @BindView(R.id.hourlyText)
+    TextView hourlyText;
+
     List<WeeklyTrendsModel> weeklyTrendsModels;
 
     private int capacity = 0;
@@ -110,39 +116,54 @@ public class WeeklyFragment extends Fragment {
         statStatus.setVisibility(View.VISIBLE);
         weeklyStatsLayout.setVisibility(View.GONE);
 
-        CoRecApiHelper.getInstance().getLocationWeeklyTrend().enqueue(new Callback<List<WeeklyTrendsModel>>() {
-            @Override
-            public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
-
-                statProgressBar.setVisibility(View.GONE);
-                statStatus.setVisibility(View.GONE);
-                weeklyStatsLayout.setVisibility(View.VISIBLE);
-
-                if (response.code() == 200) {
-                    weeklyTrendsModels = response.body();
-
-                    for (Iterator<WeeklyTrendsModel> iterator = weeklyTrendsModels.iterator(); iterator.hasNext(); ) {
-                        if (!iterator.next().LocationId.equals(locationId))
-                            iterator.remove();
+        if (WeeklyStatsData.getInstance() != null) {
+            initializeWeeklyFragment(WeeklyStatsData.getInstance().getData());
+        } else {
+            CoRecApiHelper.getInstance().getLocationWeeklyTrend().enqueue(new Callback<List<WeeklyTrendsModel>>() {
+                @Override
+                public void onResponse(Call<List<WeeklyTrendsModel>> call, Response<List<WeeklyTrendsModel>> response) {
+                    if (response.code() == 200) {
+                        weeklyTrendsModels = response.body();
+                        WeeklyStatsData weeklyStatsData = new WeeklyStatsData();
+                        weeklyStatsData.setData(response.body());
+                        WeeklyStatsData.setInstance(weeklyStatsData);
+                        initializeWeeklyFragment(WeeklyStatsData.getInstance().getData());
+                    } else {
+                        Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                     }
-
-                    if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
-                        capacity = weeklyTrendsModels.get(0).Capacity;
-
-                    initializeBarChart();
-                    initializeLineChart();
-                } else {
-                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_LONG).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
-
-            }
-        });
-
+                @Override
+                public void onFailure(Call<List<WeeklyTrendsModel>> call, Throwable t) {
+                    Toast.makeText(getContext(), R.string.another_internet_error_message, Toast.LENGTH_LONG).show();
+                    statProgressBar.setVisibility(View.GONE);
+                    statStatus.setVisibility(View.GONE);
+                }
+            });
+        }
         return view;
+    }
+
+    private void initializeWeeklyFragment(List<WeeklyTrendsModel> data){
+        weeklyTrendsModels = new ArrayList<>();
+
+        statProgressBar.setVisibility(View.GONE);
+        statStatus.setVisibility(View.GONE);
+        weeklyStatsLayout.setVisibility(View.VISIBLE);
+
+        for (Iterator<WeeklyTrendsModel> iterator = data.iterator(); iterator.hasNext(); ) {
+            WeeklyTrendsModel weekData = iterator.next();
+            if (weekData.LocationId.equals(locationId))
+                weeklyTrendsModels.add(weekData);
+        }
+
+        if (weeklyTrendsModels != null && weeklyTrendsModels.size() > 0)
+            capacity = weeklyTrendsModels.get(0).Capacity;
+
+        initializeBarChart();
+        lineChart.setVisibility(View.INVISIBLE);
+        hourlyText.setVisibility(View.INVISIBLE);
+        initializeLineChart();
     }
 
     private void initializeBarChart() {
@@ -191,6 +212,8 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Log.d("Weekly", Properties.getDaysOfWeek()[(int) e.getX()]);
+                lineChart.setVisibility(View.VISIBLE);
+                hourlyText.setVisibility(View.VISIBLE);
                 updateLineChart((int) e.getX());
             }
 
@@ -253,9 +276,16 @@ public class WeeklyFragment extends Fragment {
         final ArrayList<Entry> entries = new ArrayList<>();
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setValueFormatter(new LineGraphXAxisFormatter(Properties.getHoursOfDay()));
+
+        int max = 0;
+
         for (int i = 0; i < dayOfWeek.size(); i++) {
             WeeklyTrendsModel data = dayOfWeek.get(i);
             entries.add(new Entry(data.EntryHour, data.Count));
+            //find max count for hours
+            if(data.Count > max){
+                max = data.Count;
+            }
         }
         Collections.reverse(entries);
         Collections.sort(entries, new EntryXComparator());
@@ -295,11 +325,22 @@ public class WeeklyFragment extends Fragment {
 
         YAxis left = lineChart.getAxisLeft();
         left.setAxisMinimum(0.0f);
-        if (capacity != 0) {
-            left.setAxisMaximum(capacity);
+        //decision tree for finding max of hours line graph
+        if (capacity != 0 && max < capacity) {
+            //sets max of chart to size where you can notice counts for high capacity locations
+            if(capacity > 5 * max){
+                left.setAxisMaximum(capacity / 5);
+            }else {
+                left.setAxisMaximum(capacity);
+            }
+        }else {
+            //if capacity is less than max(Count) then base max of graph on max(Count) instead of capacity
+            left.setAxisMaximum(max + 5);
         }
         lineChart.animateXY(1000, 1000);
         lineChart.invalidate();
+
+        AnalyticsHelper.sendEventHit("Day of Week Clicked", AnalyticsHelper.CLICK, Integer.toString(day));
     }
 
     private List<WeeklyTrendsModel> convertWeekToDay(int dayOfWeek, List<WeeklyTrendsModel> weeklyTrendsModels) {
@@ -337,7 +378,7 @@ public class WeeklyFragment extends Fragment {
             //show onboarding snackbar.
             mOnboardingSnackbar = Snackbar
                     .make(lineChart,
-                            "Tap a day of the week in the bar graph to view hourly statistics.",
+                            R.string.tutorial_text,
                             Snackbar.LENGTH_INDEFINITE)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         /**
@@ -358,7 +399,7 @@ public class WeeklyFragment extends Fragment {
                             }
                         }
                     })
-                    .setAction("Don't show\nagain", new View.OnClickListener() {
+                    .setAction(R.string.dismiss, new View.OnClickListener() {
 
                         /**
                          * If the user dismisses the snackbar, we should respect their

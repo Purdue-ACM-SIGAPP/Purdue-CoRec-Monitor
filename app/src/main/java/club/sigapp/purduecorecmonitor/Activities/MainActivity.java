@@ -1,42 +1,55 @@
 package club.sigapp.purduecorecmonitor.Activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.util.List;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 import club.sigapp.purduecorecmonitor.Adapters.CoRecAdapter;
-import club.sigapp.purduecorecmonitor.Models.LocationsModel;
-import club.sigapp.purduecorecmonitor.Networking.CoRecApiHelper;
+import club.sigapp.purduecorecmonitor.Adapters.FloorTabAdapter;
+import club.sigapp.purduecorecmonitor.Analytics.AnalyticsHelper;
+import club.sigapp.purduecorecmonitor.Analytics.ScreenTrackedActivity;
+import club.sigapp.purduecorecmonitor.Fragments.FloorFragment;
 import club.sigapp.purduecorecmonitor.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ScreenTrackedActivity {
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
 
-    @BindView(R.id.mainRecyclerView)
-    RecyclerView mainRecyclerView;
+    @BindView(R.id.sliding_tabs)
+    TabLayout tabLayout;
 
     @BindView(R.id.loadingBar)
-    ProgressBar loadingBar;
+    public ProgressBar loadingBar;
 
     @BindView(R.id.status)
-    TextView status;
+    public TextView status;
 
-    private CoRecAdapter coRecAdapter;
+    @BindView(R.id.recycler_view_search)
+    public RecyclerView recyclerViewSearch;
+
     final private Context context = this;
+    public static FloorTabAdapter floorTabAdapter;
+    public static CoRecAdapter coRecAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,79 +58,101 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        callRetrofit();
+
+        loadingBar.setVisibility(View.VISIBLE);
+        status.setVisibility(View.VISIBLE);
+
+        floorTabAdapter = new FloorTabAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(floorTabAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+        AnalyticsHelper.initDefaultTracker(this.getApplication());
+        setScreenName("Main List");
     }
 
-    private void callRetrofit() {
-        status.setVisibility(View.VISIBLE);
-        status.setText("Loading...");
-        loadingBar.setVisibility(View.VISIBLE);
-        CoRecApiHelper.getInstance().getAllLocations().enqueue(new Callback<List<LocationsModel>>() {
-            @Override
-            public void onResponse(Call<List<LocationsModel>> call, Response<List<LocationsModel>> response) {
-                status.setVisibility(View.GONE);
-                loadingBar.setVisibility(View.GONE);
-                boolean hasNonZero = false;
-                for (LocationsModel location : response.body()) {
-                    if (location.Count != 0) {
-                        hasNonZero = true;
-                        break;
-                    }
-                }
-                if (!hasNonZero) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                            .setTitle("CoRec Website Error")
-                            .setMessage("It appears that the CoRec website returned all locations as" +
-                                    " having no people. This probably means the CoRec is closed, or the website is down.")
-                            .setCancelable(false)
-                            .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    callRetrofit();
-                                }
-                            }).setNegativeButton("Okay", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                    AlertDialog failure = alertDialogBuilder.create();
-                    failure.show();
-                }
-                startAdaptor(response.body());
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
 
+        final MenuItem searchButton = menu.findItem(R.id.action_search);
+        final MenuItem fitButton = menu.findItem(R.id.action_fit);
+
+        final SearchView searchView = (SearchView) searchButton.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                coRecAdapter.searchLocations(query);
+                View view = getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    searchView.clearFocus();
+                }
+                return true;
             }
 
             @Override
-            public void onFailure(Call<List<LocationsModel>> call, Throwable t) {
-                status.setVisibility(View.GONE);
-                loadingBar.setVisibility(View.GONE);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                        .setTitle("Data retrieval failed")
-                        .setMessage("Unable to connect to the Internet")
-                        .setCancelable(false)
-                        .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                callRetrofit();
-                            }
-                        });
-                AlertDialog failure = alertDialogBuilder.create();
-                failure.show();
+            public boolean onQueryTextChange(String s) {
+                coRecAdapter.searchLocations(s);
+                return true;
             }
         });
+
+        searchButton.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                fitButton.setVisible(false);
+                viewPager.setVisibility(View.GONE);
+                tabLayout.setVisibility(View.GONE);
+                recyclerViewSearch.setVisibility(View.VISIBLE);
+
+                if(coRecAdapter == null) {
+                    coRecAdapter = new CoRecAdapter(context, floorTabAdapter.locationsModels, null);
+                }else{
+                    coRecAdapter.setLocations(floorTabAdapter.locationsModels);
+                }
+                coRecAdapter.reorderList();
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+                recyclerViewSearch.setLayoutManager(linearLayoutManager);
+                recyclerViewSearch.setAdapter(coRecAdapter);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                fitButton.setVisible(true);
+                viewPager.setVisibility(View.VISIBLE);
+                tabLayout.setVisibility(View.VISIBLE);
+                recyclerViewSearch.setVisibility(View.GONE);
+                floorTabAdapter.getFragments().get(viewPager.getCurrentItem()).updateNeighbors();
+                //force favorites to update itself with new favorites list
+                floorTabAdapter.getFragments().get(0).favoritesUpdate();
+                return true;
+            }
+        });
+
+        fitButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                onClickFit();
+                return true;
+            }
+        });
+        return true;
     }
 
-    private void startAdaptor(List<LocationsModel> data) {
-        coRecAdapter = new CoRecAdapter(this, data);
-        coRecAdapter.notifyDataSetChanged();
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mainRecyclerView.setLayoutManager(linearLayoutManager);
-
-        mainRecyclerView.setAdapter(coRecAdapter);
-
+    public void onClickFit() {
+        PackageManager manager = context.getPackageManager();
+        try {
+            Intent i = manager.getLaunchIntentForPackage("com.google.android.apps.fitness");
+            if (i == null) {
+                throw new ActivityNotFoundException();
+            }
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Google Fit error or not installed.", Toast.LENGTH_LONG).show();
+        }
     }
-
 
 }

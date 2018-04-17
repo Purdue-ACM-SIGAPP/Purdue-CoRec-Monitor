@@ -91,7 +91,11 @@ public class FloorFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void setModels(List<LocationsModel> models, Context c) {
-        coRecAdapter = new CoRecAdapter(c, models, this);
+        if(isFavFragment){
+            coRecAdapter = new CoRecAdapter(c, models, this, true);
+        }else {
+            coRecAdapter = new CoRecAdapter(c, models, this, false);
+        }
         coRecAdapter.notifyDataSetChanged();
     }
 

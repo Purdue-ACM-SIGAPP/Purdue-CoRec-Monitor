@@ -107,7 +107,7 @@ public class MainActivity extends ScreenTrackedActivity {
                 recyclerViewSearch.setVisibility(View.VISIBLE);
 
                 if(coRecAdapter == null) {
-                    coRecAdapter = new CoRecAdapter(context, floorTabAdapter.locationsModels, null);
+                    coRecAdapter = new CoRecAdapter(context, floorTabAdapter.locationsModels, null, true);
                 }else{
                     coRecAdapter.setLocations(floorTabAdapter.locationsModels);
                 }

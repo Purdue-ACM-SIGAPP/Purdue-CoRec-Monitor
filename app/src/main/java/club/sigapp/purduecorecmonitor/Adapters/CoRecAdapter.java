@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,8 +36,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
     private Context context;
     private String searchText = "";
     private FloorFragment parent;
+    private boolean showImage;
 
-    public CoRecAdapter(Context context, List<LocationsModel> data, FloorFragment parent) {
+    public CoRecAdapter(Context context, List<LocationsModel> data, FloorFragment parent, boolean showImage) {
         this.parent = parent;
         this.locations = data;
         this.filteredLocations = this.locations;
@@ -41,6 +46,7 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
             this.favorites = Favorites.getFavorites(context).toArray(new String[0]);
         }
         this.context = context;
+        this.showImage = showImage;
 
         reorderList();
     }
@@ -121,6 +127,46 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
         if (!favorited) {
             holder.favButton.setImageResource(R.drawable.ic_unfavorited_star);
         }
+
+
+
+        if(showImage) {
+            //add image to card
+            switch (filteredLocations.get(position).Location.Zone.ZoneName) {
+                case "CoRec Basement":
+                    Picasso.with(context).load(R.drawable.ic_floor_basement).fit().into(holder.icon);
+                    break;
+                case "CoRec Level 1":
+                    Picasso.with(context).load(R.drawable.ic_floor_one).fit().into(holder.icon);
+                    break;
+                case "CoRec Level 2":
+                    Picasso.with(context).load(R.drawable.ic_floor_two).fit().into(holder.icon);
+                    break;
+                case "CoRec Level 3":
+                    Picasso.with(context).load(R.drawable.ic_floor_three).fit().into(holder.icon);
+                    break;
+                case "CoRec Level 4":
+                    Picasso.with(context).load(R.drawable.ic_floor_four).fit().into(holder.icon);
+                    break;
+                case "TREC":
+                    Picasso.with(context).load(R.drawable.ic_floor_trec).fit().into(holder.icon);
+                    break;
+                case "Comp Pool":
+                    Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
+                    break;
+                case "Dive Pool":
+                    Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
+                    break;
+                case "Rec Pool":
+                    Picasso.with(context).load(R.drawable.ic_floor_pool).fit().into(holder.icon);
+                    break;
+                default:
+                    Log.e("MainActivity", "Unknown zone name.");
+            }
+        }else{
+            holder.icon.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -153,6 +199,9 @@ public class CoRecAdapter extends RecyclerView.Adapter<CoRecAdapter.AreaViewHold
 
         @BindView(R.id.card_main_title)
         TextView cardTitle;
+
+        @BindView (R.id.icon)
+        ImageView icon;
 
         public AreaViewHolder(View itemView) {
             super(itemView);
